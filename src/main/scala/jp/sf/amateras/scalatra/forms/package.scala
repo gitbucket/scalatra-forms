@@ -229,7 +229,7 @@ package object forms {
    * ValueType wrapper for the Option property.
    */
   def optional[T](valueType: SingleValueType[T]): SingleValueType[Option[T]] = new SingleValueType[Option[T]](){
-    def convert(value: String): Option[T] = if(value == null) None else Some(valueType.convert(value))
+    def convert(value: String): Option[T] = if(value == null || value.isEmpty) None else Some(valueType.convert(value))
     override def validate(name: String, value: String): Seq[(String, String)] = if(value == null) Nil else valueType.validate(name, value)
   }
   
