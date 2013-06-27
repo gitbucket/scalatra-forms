@@ -19,10 +19,14 @@ function validate(e){
       form.data('validated', true);
       form.submit();
     } else {
-      $.each(data, function(key, value){
-        $('#error-' + key).text(value);
-      });
+      displayErrors(data);
     }
   }, 'json');
   return false;
+}
+
+function displayErrors(data){
+  $.each(data, function(key, value){
+    $('#error-' + key).text(value);
+  });
 }

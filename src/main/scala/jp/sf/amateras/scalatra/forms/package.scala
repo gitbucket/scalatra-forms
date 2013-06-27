@@ -66,12 +66,17 @@ package object forms {
     def validate(name: String, params: Map[String, String]): Seq[(String, String)] =
       fields.map { case (name, valueType) => valueType.validate(name, params) }.flatten
     
-    def validateAsJSON(params: Map[String, String]): JObject = {
-      JObject(validate("form", params).map { case (key, value) =>
-        JField(key, JString(value))
-      }.toList)
-    }
+    def validateAsJSON(params: Map[String, String]): JObject = toJson(validate("form", params))
+    
   }
+  
+  /**
+   * Converts errors to JSON.
+   */
+  protected [forms] def toJson(errors: Seq[(String, String)]): JObject =
+    JObject(errors.map { case (key, value) =>
+      JField(key, JString(value))
+    }.toList)    
   
   /**
    * ValueType for the String property.
