@@ -249,7 +249,7 @@ package object forms {
    * }}}
    */
   def trim[T](valueType: SingleValueType[T]): SingleValueType[T] = new SingleValueType[T](){
-    def convert(value: String): T = valueType.convert(value.trim)
+    def convert(value: String): T = valueType.convert(if(value == null) null else value.trim)
     override def validate(name: String, value: String): Seq[(String, String)] = valueType.validate(name, value.trim)
   }
   
