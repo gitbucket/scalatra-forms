@@ -3,6 +3,14 @@ scalatra-forms
 
 A library to validate and map request parameters for Scalatra.
 
+Ad first, add the following dependency into your build.sbt to use scalatra-forms.
+
+```
+resolvers += "amateras-repo" at "http://amateras.sourceforge.jp/mvn/"
+
+libraryDependencies += "jp.sf.amateras" %% "scalatra-forms" % "0.0.1"
+```
+
 Define a form mapping at first. It's a similar to Play2, but scalatra-forms is more flexible.
 
 ```scala
@@ -48,9 +56,40 @@ In the client side, scalatra-forms puts error messages into ```span#error-FIELD_
 </form>
 ```
 
+For the Ajax action, use ```ajaxGet``` or ```ajaxPost``` instead of ```get``` or ```post```.
+Actions which defined by ```ajaxGet``` or ```ajaxPost``` return validation result as JSON response.
+
+```scala
+class RegisterServlet extends ScalatraServlet with ClientSideValidationFormSupport {
+  ajaxPost("/register", form) { form: RegisterForm =>
+    ...
+  }
+}
+```
+
+In the client side, you can render error messages using ```displayErrors()```. 
+
+```
+$('#register').click(function(e){
+  $.ajax($(this).attr('action'), {
+    type: 'POST',
+    data: {
+      name       : $('#name').val(),
+      description: $('#description').val()
+    }
+  })
+  .done(function(data){
+    $('#result').text('Registered!');
+  })
+  .fail(function(data, status){
+    displayErrors($.parseJSON(data.responseText));
+  });
+});
+```
+
 Release Notes
 --------
 
-# 0.0.1 - IN DEVELOPMENT
+# 0.0.1 - 04 Aug 2013
 
 * This is the first public release.
