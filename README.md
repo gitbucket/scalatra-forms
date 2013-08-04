@@ -5,7 +5,7 @@ A library to validate and map request parameters for Scalatra.
 
 Ad first, add the following dependency into build.sbt of your Scalatra project to use scalatra-forms.
 
-```
+```scala
 resolvers += "amateras-repo" at "http://amateras.sourceforge.jp/mvn/"
 
 libraryDependencies += "jp.sf.amateras" %% "scalatra-forms" % "0.0.1"
@@ -69,7 +69,7 @@ class RegisterServlet extends ScalatraServlet with ClientSideValidationFormSuppo
 
 In the client side, you can render error messages using ```displayErrors()```. 
 
-```
+```js
 $('#register').click(function(e){
   $.ajax($(this).attr('action'), {
     type: 'POST',
