@@ -91,6 +91,6 @@ $('#register').click(function(e){
 Release Notes
 --------
 
-# 0.0.1 - 04 Aug 2013
+## 0.0.1 - 04 Aug 2013
 
 * This is the first public release.
