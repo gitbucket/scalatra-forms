@@ -3,7 +3,8 @@ scalatra-forms
 
 A library to validate and map request parameters for Scalatra.
 
-Ad first, add the following dependency into build.sbt of your Scalatra project to use scalatra-forms.
+At first, add the following dependency into your build.sbt to use scalatra-forms
+and put <a href="https://raw.github.com/takezoe/scalatra-forms/master/src/main/resources/validation.js">validation.js</a> into your project.
 
 ```scala
 resolvers += "amateras-repo" at "http://amateras.sourceforge.jp/mvn/"
