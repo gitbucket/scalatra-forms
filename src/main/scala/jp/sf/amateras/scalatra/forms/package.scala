@@ -15,8 +15,8 @@ package object forms {
    * @return the result of action
    */
   def withValidation[T](mapping: MappingValueType[T], params: Map[String, String])(action: T => Any): Any = {
-    mapping.validate("form", params).isEmpty match {
-      case true  => action(mapping.convert("form", params))
+    mapping.validate("", params).isEmpty match {
+      case true  => action(mapping.convert("", params))
       case false => throw new RuntimeException("Invalid Request") // TODO show error page?
     }
   }
@@ -49,8 +49,7 @@ package object forms {
           case Some(message) => Seq(name -> message)
           case None          => validaterec(name, value, rest)
         }
-        case Nil => Nil
-        case x => println(x); Nil
+        case _ => Nil
       }
     }
     
@@ -64,9 +63,11 @@ package object forms {
     def fields: Seq[(String, ValueType[_])]
     
     def validate(name: String, params: Map[String, String]): Seq[(String, String)] =
-      fields.map { case (name, valueType) => valueType.validate(name, params) }.flatten
+      fields.map { case (fieldName, valueType) => 
+        valueType.validate((if(name.isEmpty) fieldName else name + "." + fieldName), params)
+      }.flatten
     
-    def validateAsJSON(params: Map[String, String]): JObject = toJson(validate("form", params))
+    def validateAsJSON(params: Map[String, String]): JObject = toJson(validate("", params))
     
   }
   
@@ -117,115 +118,118 @@ package object forms {
   
   def mapping[T, P1](f1: (String, ValueType[P1]))(factory: (P1) => T): MappingValueType[T] = new MappingValueType[T]{
     def fields = Seq(f1)
-    def convert(name: String, params: Map[String, String]) = factory(p(f1, params))
+    def convert(name: String, params: Map[String, String]) = factory(p(f1, name, params))
   }
   
   def mapping[T, P1, P2](f1: (String, ValueType[P1]), f2: (String, ValueType[P2]))(factory: (P1, P2) => T): MappingValueType[T] = new MappingValueType[T]{
     def fields = Seq(f1, f2)
-    def convert(name: String, params: Map[String, String]) = factory(p(f1, params), p(f2, params))
+    def convert(name: String, params: Map[String, String]) = factory(p(f1, name, params), p(f2, name, params))
   }
 
   def mapping[T, P1, P2, P3](f1: (String, ValueType[P1]), f2: (String, ValueType[P2]), f3: (String, ValueType[P3]))(factory: (P1, P2, P3) => T): MappingValueType[T] = new MappingValueType[T]{
     def fields = Seq(f1, f2, f3)
-    def convert(name: String, params: Map[String, String]) = factory(p(f1, params), p(f2, params), p(f3, params))
+    def convert(name: String, params: Map[String, String]) = factory(p(f1, name, params), p(f2, name, params), p(f3, name, params))
   }
   
   def mapping[T, P1, P2, P3, P4](f1: (String, ValueType[P1]), f2: (String, ValueType[P2]), f3: (String, ValueType[P3]), f4: (String, ValueType[P4]))(factory: (P1, P2, P3, P4) => T): MappingValueType[T] = new MappingValueType[T]{
     def fields = Seq(f1, f2, f3, f4)
-    def convert(name: String, params: Map[String, String]) = factory(p(f1, params), p(f2, params), p(f3, params), p(f4, params))
+    def convert(name: String, params: Map[String, String]) = factory(p(f1, name, params), p(f2, name, params), p(f3, name, params), p(f4, name, params))
   }
   
   def mapping[T, P1, P2, P3, P4, P5](f1: (String, ValueType[P1]), f2: (String, ValueType[P2]), f3: (String, ValueType[P3]), f4: (String, ValueType[P4]), f5: (String, ValueType[P5]))(factory: (P1, P2, P3, P4, P5) => T): MappingValueType[T] = new MappingValueType[T]{
     def fields = Seq(f1, f2, f3, f4, f5)
-    def convert(name: String, params: Map[String, String]) = factory(p(f1, params), p(f2, params), p(f3, params), p(f4, params), p(f5, params))
+    def convert(name: String, params: Map[String, String]) = factory(p(f1, name, params), p(f2, name, params), p(f3, name, params), p(f4, name, params), p(f5, name, params))
   }
   
   def mapping[T, P1, P2, P3, P4, P5, P6](f1: (String, ValueType[P1]), f2: (String, ValueType[P2]), f3: (String, ValueType[P3]), f4: (String, ValueType[P4]), f5: (String, ValueType[P5]), f6: (String, ValueType[P6]))(factory: (P1, P2, P3, P4, P5, P6) => T): MappingValueType[T] = new MappingValueType[T]{
     def fields = Seq(f1, f2, f3, f4, f5, f6)
-    def convert(name: String, params: Map[String, String]) = factory(p(f1, params), p(f2, params), p(f3, params), p(f4, params), p(f5, params), p(f6, params))
+    def convert(name: String, params: Map[String, String]) = factory(p(f1, name, params), p(f2, name, params), p(f3, name, params), p(f4, name, params), p(f5, name, params), p(f6, name, params))
   }
   
   def mapping[T, P1, P2, P3, P4, P5, P6, P7](f1: (String, ValueType[P1]), f2: (String, ValueType[P2]), f3: (String, ValueType[P3]), f4: (String, ValueType[P4]), f5: (String, ValueType[P5]), f6: (String, ValueType[P6]), f7: (String, ValueType[P7]))(factory: (P1, P2, P3, P4, P5, P6, P7) => T): MappingValueType[T] = new MappingValueType[T]{
     def fields = Seq(f1, f2, f3, f4, f5, f6, f7)
-    def convert(name: String, params: Map[String, String]) = factory(p(f1, params), p(f2, params), p(f3, params), p(f4, params), p(f5, params), p(f6, params), p(f7, params))
+    def convert(name: String, params: Map[String, String]) = factory(p(f1, name, params), p(f2, name, params), p(f3, name, params), p(f4, name, params), p(f5, name, params), p(f6, name, params), p(f7, name, params))
   }
   
   def mapping[T, P1, P2, P3, P4, P5, P6, P7, P8](f1: (String, ValueType[P1]), f2: (String, ValueType[P2]), f3: (String, ValueType[P3]), f4: (String, ValueType[P4]), f5: (String, ValueType[P5]), f6: (String, ValueType[P6]), f7: (String, ValueType[P7]), f8: (String, ValueType[P8]))(factory: (P1, P2, P3, P4, P5, P6, P7, P8) => T): MappingValueType[T] = new MappingValueType[T]{
     def fields = Seq(f1, f2, f3, f4, f5, f6, f7, f8)
-    def convert(name: String, params: Map[String, String]) = factory(p(f1, params), p(f2, params), p(f3, params), p(f4, params), p(f5, params), p(f6, params), p(f7, params), p(f8, params))
+    def convert(name: String, params: Map[String, String]) = factory(p(f1, name, params), p(f2, name, params), p(f3, name, params), p(f4, name, params), p(f5, name, params), p(f6, name, params), p(f7, name, params), p(f8, name, params))
   }
   
   def mapping[T, P1, P2, P3, P4, P5, P6, P7, P8, P9](f1: (String, ValueType[P1]), f2: (String, ValueType[P2]), f3: (String, ValueType[P3]), f4: (String, ValueType[P4]), f5: (String, ValueType[P5]), f6: (String, ValueType[P6]), f7: (String, ValueType[P7]), f8: (String, ValueType[P8]), f9: (String, ValueType[P9]))(factory: (P1, P2, P3, P4, P5, P6, P7, P8, P9) => T): MappingValueType[T] = new MappingValueType[T]{
     def fields = Seq(f1, f2, f3, f4, f5, f6, f7, f8, f9)
-    def convert(name: String, params: Map[String, String]) = factory(p(f1, params), p(f2, params), p(f3, params), p(f4, params), p(f5, params), p(f6, params), p(f7, params), p(f8, params), p(f9, params))
+    def convert(name: String, params: Map[String, String]) = factory(p(f1, name, params), p(f2, name, params), p(f3, name, params), p(f4, name, params), p(f5, name, params), p(f6, name, params), p(f7, name, params), p(f8, name, params), p(f9, name, params))
   }
   
   def mapping[T, P1, P2, P3, P4, P5, P6, P7, P8, P9, P10](f1: (String, ValueType[P1]), f2: (String, ValueType[P2]), f3: (String, ValueType[P3]), f4: (String, ValueType[P4]), f5: (String, ValueType[P5]), f6: (String, ValueType[P6]), f7: (String, ValueType[P7]), f8: (String, ValueType[P8]), f9: (String, ValueType[P9]), f10: (String, ValueType[P10]))(factory: (P1, P2, P3, P4, P5, P6, P7, P8, P9, P10) => T): MappingValueType[T] = new MappingValueType[T]{
     def fields = Seq(f1, f2, f3, f4, f5, f6, f7, f8, f9, f10)
-    def convert(name: String, params: Map[String, String]) = factory(p(f1, params), p(f2, params), p(f3, params), p(f4, params), p(f5, params), p(f6, params), p(f7, params), p(f8, params), p(f9, params), p(f10, params))
+    def convert(name: String, params: Map[String, String]) = factory(p(f1, name, params), p(f2, name, params), p(f3, name, params), p(f4, name, params), p(f5, name, params), p(f6, name, params), p(f7, name, params), p(f8, name, params), p(f9, name, params), p(f10, name, params))
   }
   
   def mapping[T, P1, P2, P3, P4, P5, P6, P7, P8, P9, P10, P11](f1: (String, ValueType[P1]), f2: (String, ValueType[P2]), f3: (String, ValueType[P3]), f4: (String, ValueType[P4]), f5: (String, ValueType[P5]), f6: (String, ValueType[P6]), f7: (String, ValueType[P7]), f8: (String, ValueType[P8]), f9: (String, ValueType[P9]), f10: (String, ValueType[P10]), f11: (String, ValueType[P11]))(factory: (P1, P2, P3, P4, P5, P6, P7, P8, P9, P10, P11) => T): MappingValueType[T] = new MappingValueType[T]{
     def fields = Seq(f1, f2, f3, f4, f5, f6, f7, f8, f9, f10, f11)
-    def convert(name: String, params: Map[String, String]) = factory(p(f1, params), p(f2, params), p(f3, params), p(f4, params), p(f5, params), p(f6, params), p(f7, params), p(f8, params), p(f9, params), p(f10, params), p(f11, params))
+    def convert(name: String, params: Map[String, String]) = factory(p(f1, name, params), p(f2, name, params), p(f3, name, params), p(f4, name, params), p(f5, name, params), p(f6, name, params), p(f7, name, params), p(f8, name, params), p(f9, name, params), p(f10, name, params), p(f11, name, params))
   }
   
   def mapping[T, P1, P2, P3, P4, P5, P6, P7, P8, P9, P10, P11, P12](f1: (String, ValueType[P1]), f2: (String, ValueType[P2]), f3: (String, ValueType[P3]), f4: (String, ValueType[P4]), f5: (String, ValueType[P5]), f6: (String, ValueType[P6]), f7: (String, ValueType[P7]), f8: (String, ValueType[P8]), f9: (String, ValueType[P9]), f10: (String, ValueType[P10]), f11: (String, ValueType[P11]), f12: (String, ValueType[P12]))(factory: (P1, P2, P3, P4, P5, P6, P7, P8, P9, P10, P11, P12) => T): MappingValueType[T] = new MappingValueType[T]{
     def fields = Seq(f1, f2, f3, f4, f5, f6, f7, f8, f9, f10, f11, f12)
-    def convert(name: String, params: Map[String, String]) = factory(p(f1, params), p(f2, params), p(f3, params), p(f4, params), p(f5, params), p(f6, params), p(f7, params), p(f8, params), p(f9, params), p(f10, params), p(f11, params), p(f12, params))
+    def convert(name: String, params: Map[String, String]) = factory(p(f1, name, params), p(f2, name, params), p(f3, name, params), p(f4, name, params), p(f5, name, params), p(f6, name, params), p(f7, name, params), p(f8, name, params), p(f9, name, params), p(f10, name, params), p(f11, name, params), p(f12, name, params))
   }
   
   def mapping[T, P1, P2, P3, P4, P5, P6, P7, P8, P9, P10, P11, P12, P13](f1: (String, ValueType[P1]), f2: (String, ValueType[P2]), f3: (String, ValueType[P3]), f4: (String, ValueType[P4]), f5: (String, ValueType[P5]), f6: (String, ValueType[P6]), f7: (String, ValueType[P7]), f8: (String, ValueType[P8]), f9: (String, ValueType[P9]), f10: (String, ValueType[P10]), f11: (String, ValueType[P11]), f12: (String, ValueType[P12]), f13: (String, ValueType[P13]))(factory: (P1, P2, P3, P4, P5, P6, P7, P8, P9, P10, P11, P12, P13) => T): MappingValueType[T] = new MappingValueType[T]{
     def fields = Seq(f1, f2, f3, f4, f5, f6, f7, f8, f9, f10, f11, f12, f13)
-    def convert(name: String, params: Map[String, String]) = factory(p(f1, params), p(f2, params), p(f3, params), p(f4, params), p(f5, params), p(f6, params), p(f7, params), p(f8, params), p(f9, params), p(f10, params), p(f11, params), p(f12, params), p(f13, params))
+    def convert(name: String, params: Map[String, String]) = factory(p(f1, name, params), p(f2, name, params), p(f3, name, params), p(f4, name, params), p(f5, name, params), p(f6, name, params), p(f7, name, params), p(f8, name, params), p(f9, name, params), p(f10, name, params), p(f11, name, params), p(f12, name, params), p(f13, name, params))
   }
   
   def mapping[T, P1, P2, P3, P4, P5, P6, P7, P8, P9, P10, P11, P12, P13, P14](f1: (String, ValueType[P1]), f2: (String, ValueType[P2]), f3: (String, ValueType[P3]), f4: (String, ValueType[P4]), f5: (String, ValueType[P5]), f6: (String, ValueType[P6]), f7: (String, ValueType[P7]), f8: (String, ValueType[P8]), f9: (String, ValueType[P9]), f10: (String, ValueType[P10]), f11: (String, ValueType[P11]), f12: (String, ValueType[P12]), f13: (String, ValueType[P13]), f14: (String, ValueType[P14]))(factory: (P1, P2, P3, P4, P5, P6, P7, P8, P9, P10, P11, P12, P13, P14) => T): MappingValueType[T] = new MappingValueType[T]{
     def fields = Seq(f1, f2, f3, f4, f5, f6, f7, f8, f9, f10, f11, f12, f13, f14)
-    def convert(name: String, params: Map[String, String]) = factory(p(f1, params), p(f2, params), p(f3, params), p(f4, params), p(f5, params), p(f6, params), p(f7, params), p(f8, params), p(f9, params), p(f10, params), p(f11, params), p(f12, params), p(f13, params), p(f14, params))
+    def convert(name: String, params: Map[String, String]) = factory(p(f1, name, params), p(f2, name, params), p(f3, name, params), p(f4, name, params), p(f5, name, params), p(f6, name, params), p(f7, name, params), p(f8, name, params), p(f9, name, params), p(f10, name, params), p(f11, name,  params), p(f12, name, params), p(f13, name, params), p(f14, name, params))
   }
   
   def mapping[T, P1, P2, P3, P4, P5, P6, P7, P8, P9, P10, P11, P12, P13, P14, P15](f1: (String, ValueType[P1]), f2: (String, ValueType[P2]), f3: (String, ValueType[P3]), f4: (String, ValueType[P4]), f5: (String, ValueType[P5]), f6: (String, ValueType[P6]), f7: (String, ValueType[P7]), f8: (String, ValueType[P8]), f9: (String, ValueType[P9]), f10: (String, ValueType[P10]), f11: (String, ValueType[P11]), f12: (String, ValueType[P12]), f13: (String, ValueType[P13]), f14: (String, ValueType[P14]), f15: (String, ValueType[P15]))(factory: (P1, P2, P3, P4, P5, P6, P7, P8, P9, P10, P11, P12, P13, P14, P15) => T): MappingValueType[T] = new MappingValueType[T]{
     def fields = Seq(f1, f2, f3, f4, f5, f6, f7, f8, f9, f10, f11, f12, f13, f14, f15)
-    def convert(name: String, params: Map[String, String]) = factory(p(f1, params), p(f2, params), p(f3, params), p(f4, params), p(f5, params), p(f6, params), p(f7, params), p(f8, params), p(f9, params), p(f10, params), p(f11, params), p(f12, params), p(f13, params), p(f14, params), p(f15, params))
+    def convert(name: String, params: Map[String, String]) = factory(p(f1, name, params), p(f2, name, params), p(f3, name, params), p(f4, name, params), p(f5, name, params), p(f6, name, params), p(f7, name, params), p(f8, name, params), p(f9, name, params), p(f10, name, params), p(f11, name,  params), p(f12, name, params), p(f13, name, params), p(f14, name, params), p(f15, name, params))
   }
   
   def mapping[T, P1, P2, P3, P4, P5, P6, P7, P8, P9, P10, P11, P12, P13, P14, P15, P16](f1: (String, ValueType[P1]), f2: (String, ValueType[P2]), f3: (String, ValueType[P3]), f4: (String, ValueType[P4]), f5: (String, ValueType[P5]), f6: (String, ValueType[P6]), f7: (String, ValueType[P7]), f8: (String, ValueType[P8]), f9: (String, ValueType[P9]), f10: (String, ValueType[P10]), f11: (String, ValueType[P11]), f12: (String, ValueType[P12]), f13: (String, ValueType[P13]), f14: (String, ValueType[P14]), f15: (String, ValueType[P15]), f16: (String, ValueType[P16]))(factory: (P1, P2, P3, P4, P5, P6, P7, P8, P9, P10, P11, P12, P13, P14, P15, P16) => T): MappingValueType[T] = new MappingValueType[T]{
     def fields = Seq(f1, f2, f3, f4, f5, f6, f7, f8, f9, f10, f11, f12, f13, f14, f15, f16)
-    def convert(name: String, params: Map[String, String]) = factory(p(f1, params), p(f2, params), p(f3, params), p(f4, params), p(f5, params), p(f6, params), p(f7, params), p(f8, params), p(f9, params), p(f10, params), p(f11, params), p(f12, params), p(f13, params), p(f14, params), p(f15, params), p(f16, params))
+    def convert(name: String, params: Map[String, String]) = factory(p(f1, name, params), p(f2, name, params), p(f3, name, params), p(f4, name, params), p(f5, name, params), p(f6, name, params), p(f7, name, params), p(f8, name, params), p(f9, name, params), p(f10, name, params), p(f11, name,  params), p(f12, name, params), p(f13, name, params), p(f14, name, params), p(f15, name, params), p(f16, name, params))
   }
   
   def mapping[T, P1, P2, P3, P4, P5, P6, P7, P8, P9, P10, P11, P12, P13, P14, P15, P16, P17](f1: (String, ValueType[P1]), f2: (String, ValueType[P2]), f3: (String, ValueType[P3]), f4: (String, ValueType[P4]), f5: (String, ValueType[P5]), f6: (String, ValueType[P6]), f7: (String, ValueType[P7]), f8: (String, ValueType[P8]), f9: (String, ValueType[P9]), f10: (String, ValueType[P10]), f11: (String, ValueType[P11]), f12: (String, ValueType[P12]), f13: (String, ValueType[P13]), f14: (String, ValueType[P14]), f15: (String, ValueType[P15]), f16: (String, ValueType[P16]), f17: (String, ValueType[P17]))(factory: (P1, P2, P3, P4, P5, P6, P7, P8, P9, P10, P11, P12, P13, P14, P15, P16, P17) => T): MappingValueType[T] = new MappingValueType[T]{
     def fields = Seq(f1, f2, f3, f4, f5, f6, f7, f8, f9, f10, f11, f12, f13, f14, f15, f16, f17)
-    def convert(name: String, params: Map[String, String]) = factory(p(f1, params), p(f2, params), p(f3, params), p(f4, params), p(f5, params), p(f6, params), p(f7, params), p(f8, params), p(f9, params), p(f10, params), p(f11, params), p(f12, params), p(f13, params), p(f14, params), p(f15, params), p(f16, params), p(f17, params))
+    def convert(name: String, params: Map[String, String]) = factory(p(f1, name, params), p(f2, name, params), p(f3, name, params), p(f4, name, params), p(f5, name, params), p(f6, name, params), p(f7, name, params), p(f8, name, params), p(f9, name, params), p(f10, name, params), p(f11, name,  params), p(f12, name, params), p(f13, name, params), p(f14, name, params), p(f15, name, params), p(f16, name, params), p(f17, name, params))
   }
   
   def mapping[T, P1, P2, P3, P4, P5, P6, P7, P8, P9, P10, P11, P12, P13, P14, P15, P16, P17, P18](f1: (String, ValueType[P1]), f2: (String, ValueType[P2]), f3: (String, ValueType[P3]), f4: (String, ValueType[P4]), f5: (String, ValueType[P5]), f6: (String, ValueType[P6]), f7: (String, ValueType[P7]), f8: (String, ValueType[P8]), f9: (String, ValueType[P9]), f10: (String, ValueType[P10]), f11: (String, ValueType[P11]), f12: (String, ValueType[P12]), f13: (String, ValueType[P13]), f14: (String, ValueType[P14]), f15: (String, ValueType[P15]), f16: (String, ValueType[P16]), f17: (String, ValueType[P17]), f18: (String, ValueType[P18]))(factory: (P1, P2, P3, P4, P5, P6, P7, P8, P9, P10, P11, P12, P13, P14, P15, P16, P17, P18) => T): MappingValueType[T] = new MappingValueType[T]{
     def fields = Seq(f1, f2, f3, f4, f5, f6, f7, f8, f9, f10, f11, f12, f13, f14, f15, f16, f17, f18)
-    def convert(name: String, params: Map[String, String]) = factory(p(f1, params), p(f2, params), p(f3, params), p(f4, params), p(f5, params), p(f6, params), p(f7, params), p(f8, params), p(f9, params), p(f10, params), p(f11, params), p(f12, params), p(f13, params), p(f14, params), p(f15, params), p(f16, params), p(f17, params), p(f18, params))
+    def convert(name: String, params: Map[String, String]) = factory(p(f1, name, params), p(f2, name, params), p(f3, name, params), p(f4, name, params), p(f5, name, params), p(f6, name, params), p(f7, name, params), p(f8, name, params), p(f9, name, params), p(f10, name, params), p(f11, name,  params), p(f12, name, params), p(f13, name, params), p(f14, name, params), p(f15, name, params), p(f16, name, params), p(f17, name, params), p(f18, name, params))
   }
   
   def mapping[T, P1, P2, P3, P4, P5, P6, P7, P8, P9, P10, P11, P12, P13, P14, P15, P16, P17, P18, P19](f1: (String, ValueType[P1]), f2: (String, ValueType[P2]), f3: (String, ValueType[P3]), f4: (String, ValueType[P4]), f5: (String, ValueType[P5]), f6: (String, ValueType[P6]), f7: (String, ValueType[P7]), f8: (String, ValueType[P8]), f9: (String, ValueType[P9]), f10: (String, ValueType[P10]), f11: (String, ValueType[P11]), f12: (String, ValueType[P12]), f13: (String, ValueType[P13]), f14: (String, ValueType[P14]), f15: (String, ValueType[P15]), f16: (String, ValueType[P16]), f17: (String, ValueType[P17]), f18: (String, ValueType[P18]), f19: (String, ValueType[P19]))(factory: (P1, P2, P3, P4, P5, P6, P7, P8, P9, P10, P11, P12, P13, P14, P15, P16, P17, P18, P19) => T): MappingValueType[T] = new MappingValueType[T]{
     def fields = Seq(f1, f2, f3, f4, f5, f6, f7, f8, f9, f10, f11, f12, f13, f14, f15, f16, f17, f18, f19)
-    def convert(name: String, params: Map[String, String]) = factory(p(f1, params), p(f2, params), p(f3, params), p(f4, params), p(f5, params), p(f6, params), p(f7, params), p(f8, params), p(f9, params), p(f10, params), p(f11, params), p(f12, params), p(f13, params), p(f14, params), p(f15, params), p(f16, params), p(f17, params), p(f18, params), p(f19, params))
+    def convert(name: String, params: Map[String, String]) = factory(p(f1, name, params), p(f2, name, params), p(f3, name, params), p(f4, name, params), p(f5, name, params), p(f6, name, params), p(f7, name, params), p(f8, name, params), p(f9, name, params), p(f10, name, params), p(f11, name,  params), p(f12, name, params), p(f13, name, params), p(f14, name, params), p(f15, name, params), p(f16, name, params), p(f17, name, params), p(f18, name, params), p(f19, name, params))
   }
   
   def mapping[T, P1, P2, P3, P4, P5, P6, P7, P8, P9, P10, P11, P12, P13, P14, P15, P16, P17, P18, P19, P20](f1: (String, ValueType[P1]), f2: (String, ValueType[P2]), f3: (String, ValueType[P3]), f4: (String, ValueType[P4]), f5: (String, ValueType[P5]), f6: (String, ValueType[P6]), f7: (String, ValueType[P7]), f8: (String, ValueType[P8]), f9: (String, ValueType[P9]), f10: (String, ValueType[P10]), f11: (String, ValueType[P11]), f12: (String, ValueType[P12]), f13: (String, ValueType[P13]), f14: (String, ValueType[P14]), f15: (String, ValueType[P15]), f16: (String, ValueType[P16]), f17: (String, ValueType[P17]), f18: (String, ValueType[P18]), f19: (String, ValueType[P19]), f20: (String, ValueType[P20]))(factory: (P1, P2, P3, P4, P5, P6, P7, P8, P9, P10, P11, P12, P13, P14, P15, P16, P17, P18, P19, P20) => T): MappingValueType[T] = new MappingValueType[T]{
     def fields = Seq(f1, f2, f3, f4, f5, f6, f7, f8, f9, f10, f11, f12, f13, f14, f15, f16, f17, f18, f19, f20)
-    def convert(name: String, params: Map[String, String]) = factory(p(f1, params), p(f2, params), p(f3, params), p(f4, params), p(f5, params), p(f6, params), p(f7, params), p(f8, params), p(f9, params), p(f10, params), p(f11, params), p(f12, params), p(f13, params), p(f14, params), p(f15, params), p(f16, params), p(f17, params), p(f18, params), p(f19, params), p(f20, params))
+    def convert(name: String, params: Map[String, String]) = factory(p(f1, name, params), p(f2, name, params), p(f3, name, params), p(f4, name, params), p(f5, name, params), p(f6, name, params), p(f7, name, params), p(f8, name, params), p(f9, name, params), p(f10, name, params), p(f11, name,  params), p(f12, name, params), p(f13, name, params), p(f14, name, params), p(f15, name, params), p(f16, name, params), p(f17, name, params), p(f18, name, params), p(f19, name, params), p(f20, name, params))
   }
   
   def mapping[T, P1, P2, P3, P4, P5, P6, P7, P8, P9, P10, P11, P12, P13, P14, P15, P16, P17, P18, P19, P20, P21](f1: (String, ValueType[P1]), f2: (String, ValueType[P2]), f3: (String, ValueType[P3]), f4: (String, ValueType[P4]), f5: (String, ValueType[P5]), f6: (String, ValueType[P6]), f7: (String, ValueType[P7]), f8: (String, ValueType[P8]), f9: (String, ValueType[P9]), f10: (String, ValueType[P10]), f11: (String, ValueType[P11]), f12: (String, ValueType[P12]), f13: (String, ValueType[P13]), f14: (String, ValueType[P14]), f15: (String, ValueType[P15]), f16: (String, ValueType[P16]), f17: (String, ValueType[P17]), f18: (String, ValueType[P18]), f19: (String, ValueType[P19]), f20: (String, ValueType[P20]), f21: (String, ValueType[P21]))(factory: (P1, P2, P3, P4, P5, P6, P7, P8, P9, P10, P11, P12, P13, P14, P15, P16, P17, P18, P19, P20, P21) => T): MappingValueType[T] = new MappingValueType[T]{
     def fields = Seq(f1, f2, f3, f4, f5, f6, f7, f8, f9, f10, f11, f12, f13, f14, f15, f16, f17, f18, f19, f20, f21)
-    def convert(name: String, params: Map[String, String]) = factory(p(f1, params), p(f2, params), p(f3, params), p(f4, params), p(f5, params), p(f6, params), p(f7, params), p(f8, params), p(f9, params), p(f10, params), p(f11, params), p(f12, params), p(f13, params), p(f14, params), p(f15, params), p(f16, params), p(f17, params), p(f18, params), p(f19, params), p(f20, params), p(f21, params))
+    def convert(name: String, params: Map[String, String]) = factory(p(f1, name, params), p(f2, name, params), p(f3, name, params), p(f4, name, params), p(f5, name, params), p(f6, name, params), p(f7, name, params), p(f8, name, params), p(f9, name, params), p(f10, name, params), p(f11, name,  params), p(f12, name, params), p(f13, name, params), p(f14, name, params), p(f15, name, params), p(f16, name, params), p(f17, name, params), p(f18, name, params), p(f19, name, params), p(f20, name, params), p(f21, name, params))
   }
   
   def mapping[T, P1, P2, P3, P4, P5, P6, P7, P8, P9, P10, P11, P12, P13, P14, P15, P16, P17, P18, P19, P20, P21, P22](f1: (String, ValueType[P1]), f2: (String, ValueType[P2]), f3: (String, ValueType[P3]), f4: (String, ValueType[P4]), f5: (String, ValueType[P5]), f6: (String, ValueType[P6]), f7: (String, ValueType[P7]), f8: (String, ValueType[P8]), f9: (String, ValueType[P9]), f10: (String, ValueType[P10]), f11: (String, ValueType[P11]), f12: (String, ValueType[P12]), f13: (String, ValueType[P13]), f14: (String, ValueType[P14]), f15: (String, ValueType[P15]), f16: (String, ValueType[P16]), f17: (String, ValueType[P17]), f18: (String, ValueType[P18]), f19: (String, ValueType[P19]), f20: (String, ValueType[P20]), f21: (String, ValueType[P21]), f22: (String, ValueType[P22]))(factory: (P1, P2, P3, P4, P5, P6, P7, P8, P9, P10, P11, P12, P13, P14, P15, P16, P17, P18, P19, P20, P21, P22) => T): MappingValueType[T] = new MappingValueType[T]{
     def fields = Seq(f1, f2, f3, f4, f5, f6, f7, f8, f9, f10, f11, f12, f13, f14, f15, f16, f17, f18, f19, f20, f21, f22)
-    def convert(name: String, params: Map[String, String]) = factory(p(f1, params), p(f2, params), p(f3, params), p(f4, params), p(f5, params), p(f6, params), p(f7, params), p(f8, params), p(f9, params), p(f10, params), p(f11, params), p(f12, params), p(f13, params), p(f14, params), p(f15, params), p(f16, params), p(f17, params), p(f18, params), p(f19, params), p(f20, params), p(f21, params), p(f22, params))
+    def convert(name: String, params: Map[String, String]) = factory(p(f1, name, params), p(f2, name, params), p(f3, name, params), p(f4, name, params), p(f5, name, params), p(f6, name, params), p(f7, name, params), p(f8, name, params), p(f9, name, params), p(f10, name, params), p(f11, name,  params), p(f12, name, params), p(f13, name, params), p(f14, name, params), p(f15, name, params), p(f16, name, params), p(f17, name, params), p(f18, name, params), p(f19, name, params), p(f20, name, params), p(f21, name, params), p(f22, name, params))
   }
   
-  private def p[T](field: (String, ValueType[T]), params: Map[String, String]): T = field._2.convert(field._1, params)
+  private def p[T](field: (String, ValueType[T]), name: String, params: Map[String, String]): T = 
+    field match { case (fieldName, valueType) =>
+      valueType.convert(if(name.isEmpty) fieldName else name + "." + fieldName, params)
+    }
   
   /////////////////////////////////////////////////////////////////////////////////////////////
   // ValueType wrappers to provide additional features.
@@ -254,29 +258,6 @@ package object forms {
     
     private def trim(value: String): String = if(value == null) null else value.trim
   }
-  
-//  /**
-//   * ValueType wrapper to trim all parameters.
-//   * 
-//   * {{{
-//   * val form = trim(mapping(
-//   *   "name" -> text(required),
-//   *   "mail" -> text(required)
-//   * ))
-//   * }}}
-//   */
-//  def trim[T](valueType: MappingValueType[T]): MappingValueType[T] = new MappingValueType[T](){
-//    override def validate(name: String, params: Map[String, String]): Seq[(String, String)] =
-//      fields.map { case (name, valueType) => valueType.validate(name, trimMap(params)) }.flatten
-//    
-//    override def validateAsJSON(params: Map[String, String]): JObject = {
-//      JObject(validate("form", trimMap(params)).map { case (key, value) =>
-//        JField(key, JString(value))
-//      }.toList)
-//    }
-//      
-//    private def trimMap(params: Map[String, String]): Map[String, String] = params.map{ x => x._1 -> x._2.trim }
-//  }
   
   /**
    * ValueType wrapper to specified a property name which is used in the error message. 

@@ -26,8 +26,8 @@ trait ClientSideValidationFormSupport { self: ServletBase with JacksonJsonSuppor
   
   def ajaxGet[T](path: String, form: MappingValueType[T])(action: T => Any): Route = {
     get(path){
-      form.validate("form", params) match {
-        case Nil    => action(form.convert("form", params))
+      form.validate("", params) match {
+        case Nil    => action(form.convert("", params))
         case errors => {
           status = 400
           contentType = "application/json"
@@ -39,8 +39,8 @@ trait ClientSideValidationFormSupport { self: ServletBase with JacksonJsonSuppor
   
   def ajaxPost[T](path: String, form: MappingValueType[T])(action: T => Any): Route = {
     post(path){
-      form.validate("form", params) match {
-        case Nil    => action(form.convert("form", params))
+      form.validate("", params) match {
+        case Nil    => action(form.convert("", params))
         case errors => {
           status = 400
           contentType = "application/json"
