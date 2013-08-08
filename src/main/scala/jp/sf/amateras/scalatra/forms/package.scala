@@ -38,16 +38,17 @@ package object forms {
     
     def convert(value: String): T
     
-    def validate(name: String, params: Map[String, String]): Seq[(String, String)] = validate(name, params.get(name).orNull)
+    def validate(name: String, params: Map[String, String]): Seq[(String, String)] = validate(name, params.get(name).orNull, params)
     
-    def validate(name: String, value: String): Seq[(String, String)] = validaterec(name, value, Seq(constraints: _*))
+    def validate(name: String, value: String, params: Map[String, String]): Seq[(String, String)] = validaterec(name, value, params, Seq(constraints: _*))
     
     @scala.annotation.tailrec
-    private def validaterec(name: String, value: String, constraints: Seq[Constraint]): Seq[(String, String)] = {
+    private def validaterec(name: String, value: String, params: Map[String, String], 
+                             constraints: Seq[Constraint]): Seq[(String, String)] = {
       constraints match {
-        case (x :: rest) => x.validate(name, value) match {
+        case (x :: rest) => x.validate(name, value, params) match {
           case Some(message) => Seq(name -> message)
-          case None          => validaterec(name, value, rest)
+          case None          => validaterec(name, value, params, rest)
         }
         case _ => Nil
       }
@@ -106,10 +107,10 @@ package object forms {
       case x => x.toInt
     }
     
-    override def validate(name: String, value: String): Seq[(String, String)] = {
+    override def validate(name: String, value: String, params: Map[String, String]): Seq[(String, String)] = {
       try {
         value.toInt
-        super.validate(name, value)
+        super.validate(name, value, params)
       } catch {
         case e: NumberFormatException => Seq(name -> "%s must be a number.".format(name))
       }
@@ -239,8 +240,28 @@ package object forms {
    */
   def optional[T](valueType: SingleValueType[T]): SingleValueType[Option[T]] = new SingleValueType[Option[T]](){
     def convert(value: String): Option[T] = if(value == null || value.isEmpty) None else Some(valueType.convert(value))
-    override def validate(name: String, value: String): Seq[(String, String)] = if(value == null || value.isEmpty) Nil else valueType.validate(name, value)
+    override def validate(name: String, value: String, params: Map[String, String]): Seq[(String, String)] = if(value == null || value.isEmpty) Nil else valueType.validate(name, value, params)
   }
+  
+  def optionalRequired[T](condition: (Map[String, String]) => Boolean, valueType: SingleValueType[T]): SingleValueType[Option[T]] = new SingleValueType[Option[T]](){
+    def convert(value: String): Option[T] = if(value == null || value.isEmpty) None else Some(valueType.convert(value))
+    override def validate(name: String, value: String, params: Map[String, String]): Seq[(String, String)] =
+      if(value == null || value.isEmpty) {
+        if(condition(params)){
+          Seq(name -> "%s is required.".format(name))
+        } else {
+          Nil
+        }
+      } else {
+        valueType.validate(name, value, params)
+      }
+  }
+  
+  def optionalRequiredIfChecked[T](checkboxName: String, valueType: SingleValueType[T]): SingleValueType[Option[T]] = 
+    optionalRequired(_.get(checkboxName).orNull match {
+      case null|"false"|"FALSE" => false
+      case _                    => true
+    }, valueType)
   
   /**
    * ValueType wrapper to trim a parameter.
@@ -254,7 +275,7 @@ package object forms {
    */
   def trim[T](valueType: SingleValueType[T]): SingleValueType[T] = new SingleValueType[T](){
     def convert(value: String): T = valueType.convert(trim(value))
-    override def validate(name: String, value: String): Seq[(String, String)] = valueType.validate(name, trim(value))
+    override def validate(name: String, value: String, params: Map[String, String]): Seq[(String, String)] = valueType.validate(name, trim(value), params)
     
     private def trim(value: String): String = if(value == null) null else value.trim
   }
@@ -271,15 +292,23 @@ package object forms {
     */
   def label[T](label: String, valueType: SingleValueType[T]): SingleValueType[T] = new SingleValueType[T](){
     def convert(value: String): T = valueType.convert(value)
-    override def validate(name: String, value: String): Seq[(String, String)] = 
-      valueType.validate(label, value).map { case (label, message) => name -> message }
+    override def validate(name: String, value: String, params: Map[String, String]): Seq[(String, String)] = 
+      valueType.validate(label, value, params).map { case (label, message) => name -> message }
   }
   
   /////////////////////////////////////////////////////////////////////////////////////////////
   // Constraints
   
-  trait Constraint {
+  trait ConstraintBase {
+    def validate(name: String, value: String, params: Map[String, String]): Option[String]
+  }
+  
+  trait Constraint extends ConstraintBase {
+    
+    def validate(name: String, value: String, params: Map[String, String]): Option[String] = validate(name, value)
+    
     def validate(name: String, value: String): Option[String]
+    
   }
   
   def required: Constraint = new Constraint(){
