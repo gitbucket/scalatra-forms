@@ -3,6 +3,9 @@ scalatra-forms
 
 A library to validate and map request parameters for Scalatra.
 
+Getting Started
+--------
+
 At first, add the following dependency into your build.sbt to use scalatra-forms
 and put <a href="https://raw.github.com/takezoe/scalatra-forms/master/src/main/resources/validation.js">validation.js</a> into your project.
 
@@ -56,6 +59,50 @@ In the client side, scalatra-forms puts error messages into ```span#error-FIELD_
   <input type="submit" value="Register"/>
 </form>
 ```
+
+Custom Validation
+--------
+
+You can create custom ```Constraint```.
+
+```
+def identifier: Constraint = new Constraint(){
+  override def validate(name: String, value: String): Option[String] =
+    if(!value.matches("^[a-zA-Z0-9\\-_]+$")){
+      Some(s"${name} contains invalid character.")
+    } else {
+      None
+    }
+}
+
+val form = mapping(
+  "name"        -> text(required, identifier), 
+  "description" -> text()
+)(RegisterForm.apply)
+```
+
+You can also create multi field validator by overriding ```validate(String, String, Map[String, String])```.
+It's possible to look up other field value via ```params```.
+
+Other way to create multi field validator is calling ```verifying``` for mapping.
+You can give the function yo validate the mapped case class. This function takes the mapped value and returns 
+```Seq[(String, String)]``` which contains errors or ```Nil```.
+
+```
+val form = mapping(
+  "reason"      -> number(required), 
+  "description" -> optional(text)
+)(ReasonForm.apply).verifying { value =>
+  if(value.reason == 4 && value.descripsion){
+    Seq("description" -> "If reason is 'Other' then description is required.")
+  } else {
+    Nil
+  }
+}
+```
+
+Ajax
+--------
 
 For the Ajax action, use ```ajaxGet``` or ```ajaxPost``` instead of ```get``` or ```post```.
 Actions which defined by ```ajaxGet``` or ```ajaxPost``` return validation result as JSON response.
