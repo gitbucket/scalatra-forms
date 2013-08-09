@@ -138,7 +138,7 @@ $('#register').click(function(e){
 Release Notes
 --------
 
-### 0.0.2 - IN DEVELOPMENT
+### 0.0.2 - 10 Aug 2013
 
 * Improved nested property support.
 
