@@ -243,6 +243,9 @@ package object forms {
     override def validate(name: String, value: String, params: Map[String, String]): Seq[(String, String)] = if(value == null || value.isEmpty) Nil else valueType.validate(name, value, params)
   }
   
+  /**
+   * ValueType wrapper for the Optional property which is required if condition is true.
+   */
   def optionalRequired[T](condition: (Map[String, String]) => Boolean, valueType: SingleValueType[T]): SingleValueType[Option[T]] = new SingleValueType[Option[T]](){
     def convert(value: String): Option[T] = if(value == null || value.isEmpty) None else Some(valueType.convert(value))
     override def validate(name: String, value: String, params: Map[String, String]): Seq[(String, String)] =
@@ -257,6 +260,9 @@ package object forms {
       }
   }
   
+  /**
+   * ValueType wrapper for the Optional property which is required if checkbox is checked.
+   */
   def optionalRequiredIfChecked[T](checkboxName: String, valueType: SingleValueType[T]): SingleValueType[Option[T]] = 
     optionalRequired(_.get(checkboxName).orNull match {
       case null|"false"|"FALSE" => false
