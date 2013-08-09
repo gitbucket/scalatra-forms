@@ -65,7 +65,7 @@ Custom Validation
 
 You can create custom ```Constraint```.
 
-```
+```scala
 def identifier: Constraint = new Constraint(){
   override def validate(name: String, value: String): Option[String] =
     if(!value.matches("^[a-zA-Z0-9\\-_]+$")){
@@ -88,7 +88,7 @@ Other way to create multi field validator is calling ```verifying``` for mapping
 You can give the function yo validate the mapped case class. This function takes the mapped value and returns 
 ```Seq[(String, String)]``` which contains errors or ```Nil```.
 
-```
+```scala
 val form = mapping(
   "reason"      -> number(required), 
   "description" -> optional(text)
