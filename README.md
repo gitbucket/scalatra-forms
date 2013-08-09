@@ -142,7 +142,7 @@ Release Notes
 
 * Improved nested property support.
 * Add ```validate(String, String, Map[String, String])``` to ```Constraint```. 
-  It make possible to access other parameter in single field validation.
+  It makes possible to access other parameter in single field validation.
 * Add ```verify()``` to ```MappingValueType``` which validates the mapped instance.
 
 ### 0.0.1 - 04 Aug 2013
