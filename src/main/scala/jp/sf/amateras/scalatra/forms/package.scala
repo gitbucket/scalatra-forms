@@ -25,8 +25,17 @@ package object forms {
   // ValueTypes
   
   trait ValueType[T] {
+    
     def convert(name: String, params: Map[String, String]): T
+    
     def validate(name: String, params: Map[String, String]): Seq[(String, String)]
+    
+    def verifying(validator: (T, Map[String, String]) => Seq[(String, String)]): ValueType[T] = 
+      new VerifyingValueType(this, validator)
+    
+    def verifying(validator: (T) => Seq[(String, String)]): ValueType[T] = 
+      new VerifyingValueType(this, (value: T, params: Map[String, String]) => validator(value))
+    
   }
   
   /**
@@ -54,6 +63,28 @@ package object forms {
       }
     }
     
+  }
+  
+  /**
+   * ValueType wrapper to verify the converted value.
+   * An instance of this class is returned from only [[jp.sf.amateras.scalatra.forms.ValueType#verifying]].
+   * 
+   * @param valueType the wrapped ValueType
+   * @param validator the function which verifies the converted value
+   */
+  private class VerifyingValueType[T](valueType: ValueType[T], 
+      validator: (T, Map[String, String]) => Seq[(String, String)]) extends ValueType[T] {
+    
+    def convert(name: String, params: Map[String, String]): T = valueType.convert(name, params)
+        
+    def validate(name: String, params: Map[String, String]): Seq[(String, String)] = {
+      val result = valueType.validate(name, params)
+      if(result.isEmpty){
+        validator(convert(name, params), params)
+      } else {
+        result
+      }
+    }
   }
   
   /**
