@@ -43,13 +43,16 @@ package object forms {
    */
   abstract class SingleValueType[T](constraints: Constraint*) extends ValueType[T]{
     
-    def convert(name: String, params: Map[String, String]): T = convert(params.get(name).orNull)
+    def convert(name: String, params: Map[String, String]): T = 
+      convert(params.get(name).orNull)
     
     def convert(value: String): T
     
-    def validate(name: String, params: Map[String, String]): Seq[(String, String)] = validate(name, params.get(name).orNull, params)
+    def validate(name: String, params: Map[String, String]): Seq[(String, String)] = 
+      validate(name, params.get(name).orNull, params)
     
-    def validate(name: String, value: String, params: Map[String, String]): Seq[(String, String)] = validaterec(name, value, params, Seq(constraints: _*))
+    def validate(name: String, value: String, params: Map[String, String]): Seq[(String, String)] = 
+      validaterec(name, value, params, Seq(constraints: _*))
     
     @scala.annotation.tailrec
     private def validaterec(name: String, value: String, params: Map[String, String], 
@@ -270,42 +273,43 @@ package object forms {
    * ValueType wrapper for the optional property.
    */
   def optional[T](valueType: SingleValueType[T]): SingleValueType[Option[T]] = new SingleValueType[Option[T]](){
-    def convert(value: String): Option[T] = if(value == null || value.isEmpty) None else Some(valueType.convert(value))
-    override def validate(name: String, value: String, params: Map[String, String]): Seq[(String, String)] = if(value == null || value.isEmpty) Nil else valueType.validate(name, value, params)
+    def convert(value: String): Option[T] = 
+      if(value == null || value.isEmpty) None else Some(valueType.convert(value))
+      
+    override def validate(name: String, value: String, params: Map[String, String]): Seq[(String, String)] = 
+      if(value == null || value.isEmpty) Nil else valueType.validate(name, value, params)
   }
   
   /**
    * ValueType wrapper for the optional mapping property.
    */
   def optional[T](condition: (Map[String, String]) => Boolean, valueType: MappingValueType[T]): ValueType[Option[T]] = new ValueType[Option[T]](){
-    override def convert(name: String, params: Map[String, String]): Option[T] = if(condition(params)) Some(valueType.convert(name, params)) else None
-    override def validate(name: String, params: Map[String, String]): Seq[(String, String)] = if(condition(params)) valueType.validate(name, params) else Nil
+    override def convert(name: String, params: Map[String, String]): Option[T] = 
+      if(condition(params)) Some(valueType.convert(name, params)) else None
+      
+    override def validate(name: String, params: Map[String, String]): Seq[(String, String)] = 
+      if(condition(params)) valueType.validate(name, params) else Nil
   }
   
   /**
    * ValueType wrapper for the optional property which is available if checkbox is checked.
    */
   def optionalIfNotChecked[T](checkboxName: String, valueType: MappingValueType[T]): ValueType[Option[T]] = 
-    optional((params: Map[String, String]) => 
-      params.get(checkboxName).orNull match {
-        case null|"false"|"FALSE" => false
-        case _ => true
-      }, valueType)
+    optional({ params => boolean().convert(checkboxName, params) }, valueType)
   
   /**
    * ValueType wrapper for the optional property which is required if condition is true.
    */
-  def optionalRequired[T](condition: (Map[String, String]) => Boolean, valueType: SingleValueType[T]): SingleValueType[Option[T]] = new SingleValueType[Option[T]](){
-    def convert(value: String): Option[T] = if(value == null || value.isEmpty) None else Some(valueType.convert(value))
+  def optionalRequired[T](condition: (Map[String, String]) => Boolean, 
+                          valueType: SingleValueType[T]): SingleValueType[Option[T]] = new SingleValueType[Option[T]](){
+    def convert(value: String): Option[T] = 
+      if(value == null || value.isEmpty) None else Some(valueType.convert(value))
+      
     override def validate(name: String, value: String, params: Map[String, String]): Seq[(String, String)] =
-      if(value == null || value.isEmpty) {
-        if(condition(params)){
-          Seq(name -> "%s is required.".format(name))
-        } else {
-          Nil
-        }
-      } else {
-        valueType.validate(name, value, params)
+      required.validate(name, value) match {
+        case Some(error) if(condition(params)) => Seq(name -> error)
+        case Some(error) => Nil
+        case None => valueType.validate(name, value, params)
       }
   }
   
@@ -329,8 +333,11 @@ package object forms {
    * }}}
    */
   def trim[T](valueType: SingleValueType[T]): SingleValueType[T] = new SingleValueType[T](){
+    
     def convert(value: String): T = valueType.convert(trim(value))
-    override def validate(name: String, value: String, params: Map[String, String]): Seq[(String, String)] = valueType.validate(name, trim(value), params)
+    
+    override def validate(name: String, value: String, params: Map[String, String]): Seq[(String, String)] = 
+      valueType.validate(name, trim(value), params)
     
     private def trim(value: String): String = if(value == null) null else value.trim
   }
@@ -346,9 +353,12 @@ package object forms {
    * }}}
     */
   def label[T](label: String, valueType: SingleValueType[T]): SingleValueType[T] = new SingleValueType[T](){
+    
     def convert(value: String): T = valueType.convert(value)
+    
     override def validate(name: String, value: String, params: Map[String, String]): Seq[(String, String)] = 
       valueType.validate(label, value, params).map { case (label, message) => name -> message }
+    
   }
   
   /////////////////////////////////////////////////////////////////////////////////////////////
