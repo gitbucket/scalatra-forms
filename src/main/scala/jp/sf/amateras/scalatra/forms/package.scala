@@ -336,41 +336,37 @@ package object forms {
   /////////////////////////////////////////////////////////////////////////////////////////////
   // Constraints
   
-  trait ConstraintBase {
-    def validate(name: String, value: String, params: Map[String, String]): Option[String]
-  }
-  
-  trait Constraint extends ConstraintBase {
+  trait Constraint {
     
     def validate(name: String, value: String, params: Map[String, String]): Option[String] = validate(name, value)
     
-    def validate(name: String, value: String): Option[String]
+    def validate(name: String, value: String): Option[String] = None
     
   }
   
   def required: Constraint = new Constraint(){
-    def validate(name: String, value: String): Option[String] = {
+    override def validate(name: String, value: String): Option[String] = {
       if(value == null || value.isEmpty) Some("%s is required.".format(name)) else None
     }
   }
   
   def required(message: String): Constraint = new Constraint(){
-    def validate(name: String, value: String): Option[String] = 
+    override def validate(name: String, value: String): Option[String] = 
       if(value == null || value.isEmpty) Some(message) else None
   }
   
   def maxlength(length: Int): Constraint = new Constraint(){
-    def validate(name: String, value: String): Option[String] =
+    override def validate(name: String, value: String): Option[String] =
       if(value != null && value.length > length) Some("%s cannot be longer than %d characters.".format(name, length)) else None
   }
   
   def minlength(length: Int): Constraint = new Constraint(){
-    def validate(name: String, value: String): Option[String] =
+    override def validate(name: String, value: String): Option[String] =
       if(value != null && value.length < length) Some("%s cannot be shorter than %d characters".format(name, length)) else None
   }
   
   def pattern(pattern: String, message: String = ""): Constraint = new Constraint {
-    def validate(name: String, value: String): Option[String] =
+    override def validate(name: String, value: String): Option[String] =
       if(value != null && !value.matches("^" + pattern + "$")){
         if(message.isEmpty) Some("%s must be '%s'.".format(name, pattern)) else Some(message)
       } else None
