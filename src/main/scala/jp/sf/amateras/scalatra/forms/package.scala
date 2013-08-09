@@ -267,7 +267,7 @@ package object forms {
   // ValueType wrappers to provide additional features.
   
   /**
-   * ValueType wrapper for the Option property.
+   * ValueType wrapper for the optional property.
    */
   def optional[T](valueType: SingleValueType[T]): SingleValueType[Option[T]] = new SingleValueType[Option[T]](){
     def convert(value: String): Option[T] = if(value == null || value.isEmpty) None else Some(valueType.convert(value))
@@ -275,7 +275,25 @@ package object forms {
   }
   
   /**
-   * ValueType wrapper for the Optional property which is required if condition is true.
+   * ValueType wrapper for the optional mapping property.
+   */
+  def optional[T](condition: (Map[String, String]) => Boolean, valueType: MappingValueType[T]): ValueType[Option[T]] = new ValueType[Option[T]](){
+    override def convert(name: String, params: Map[String, String]): Option[T] = if(condition(params)) Some(valueType.convert(name, params)) else None
+    override def validate(name: String, params: Map[String, String]): Seq[(String, String)] = if(condition(params)) valueType.validate(name, params) else Nil
+  }
+  
+  /**
+   * ValueType wrapper for the optional property which is available if checkbox is checked.
+   */
+  def optionalIfNotChecked[T](checkboxName: String, valueType: MappingValueType[T]): ValueType[Option[T]] = 
+    optional((params: Map[String, String]) => 
+      params.get(checkboxName).orNull match {
+        case null|"false"|"FALSE" => false
+        case _ => true
+      }, valueType)
+  
+  /**
+   * ValueType wrapper for the optional property which is required if condition is true.
    */
   def optionalRequired[T](condition: (Map[String, String]) => Boolean, valueType: SingleValueType[T]): SingleValueType[Option[T]] = new SingleValueType[Option[T]](){
     def convert(value: String): Option[T] = if(value == null || value.isEmpty) None else Some(valueType.convert(value))
@@ -292,7 +310,7 @@ package object forms {
   }
   
   /**
-   * ValueType wrapper for the Optional property which is required if checkbox is checked.
+   * ValueType wrapper for the optional property which is required if checkbox is checked.
    */
   def optionalRequiredIfChecked[T](checkboxName: String, valueType: SingleValueType[T]): SingleValueType[Option[T]] = 
     optionalRequired(_.get(checkboxName).orNull match {
