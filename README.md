@@ -140,7 +140,7 @@ Release Notes
 
 ### 0.0.3 - IN DEVELOPMENT
 
-* Add '''ValidationJavaScriptProvoider'''.
+* Add ```ValidationJavaScriptProvoider```.
 
 ### 0.0.2 - 10 Aug 2013
 
