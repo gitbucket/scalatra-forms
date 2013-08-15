@@ -10,7 +10,7 @@ import org.scalatra._
  * {{{
  * class ScalatraBootstrap extends LifeCycle {
  *   override def init(context: ServletContext) {
- *     context.mount(new JavaScriptProvider, "/commons/js")
+ *     context.mount(new ValidationJavaScriptProvider, "/commons/js")
  *     ...
  *   }
  * }
