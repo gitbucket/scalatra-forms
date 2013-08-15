@@ -12,7 +12,7 @@ and put <a href="https://raw.github.com/takezoe/scalatra-forms/master/src/main/r
 ```scala
 resolvers += "amateras-repo" at "http://amateras.sourceforge.jp/mvn/"
 
-libraryDependencies += "jp.sf.amateras" %% "scalatra-forms" % "0.0.1"
+libraryDependencies += "jp.sf.amateras" %% "scalatra-forms" % "0.0.2"
 ```
 
 Define a form mapping at first. It's a similar to Play2, but scalatra-forms is more flexible.
@@ -138,9 +138,12 @@ $('#register').click(function(e){
 Release Notes
 --------
 
-### 0.0.2 - IN DEVELOPMENT
+### 0.0.2 - 10 Aug 2013
 
 * Improved nested property support.
+* Add ```validate(String, String, Map[String, String])``` to ```Constraint```. 
+  It makes possible to access other parameter in single field validation.
+* Add ```verify()``` to ```MappingValueType``` which validates the mapped instance.
 
 ### 0.0.1 - 04 Aug 2013
 
