@@ -138,6 +138,10 @@ $('#register').click(function(e){
 Release Notes
 --------
 
+### 0.0.3 - IN DEVELOPMENT
+
+* Add '''ValidationJavaScriptProvoider'''.
+
 ### 0.0.2 - 10 Aug 2013
 
 * Improved nested property support.
