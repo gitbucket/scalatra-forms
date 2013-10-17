@@ -141,6 +141,7 @@ Release Notes
 ### 0.0.3 - IN DEVELOPMENT
 
 * Add ```ValidationJavaScriptProvoider```.
+* Add ```list()``` mapping for List property.
 
 ### 0.0.2 - 10 Aug 2013
 
