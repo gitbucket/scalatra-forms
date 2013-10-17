@@ -269,6 +269,52 @@ package object forms {
   /////////////////////////////////////////////////////////////////////////////////////////////
   // ValueType wrappers to provide additional features.
   
+  private val pattern = "(.+?)\\[([0-9]+)\\]\\[(.+?)\\]".r
+  
+  /**
+   * ValueType for the List property.
+   * Parameter name must be "name[index][subName]".
+   */
+  def list[T](mapping: MappingValueType[T]): ValueType[List[T]] = new ValueType[List[T]](){
+
+    private def extractListParams(params: Map[String, String]) = {
+      params.flatMap { case (key, value) =>
+        key match {
+          case pattern(_, i, s) => Some((i.toInt, s, value))
+          case _ => None
+        }
+      }
+      .groupBy { case (i, key, value) => i }
+      .map     { case (i, values) =>
+        (i -> values.map { case (_, key, value) =>
+          key -> value
+        }.toMap)
+      }
+    }
+
+    override def convert(name: String, params: Map[String, String]): List[T] = {
+      val listParams = extractListParams(params)
+      val max = if(listParams.isEmpty) -1 else listParams.map(_._1).max
+
+      (for(i <- 0 to max) yield {
+        val rowParams = listParams.getOrElse(i, Map.empty[String, String])
+        mapping.convert("", rowParams)
+      }).toList
+    }
+
+    def validate(name: String, params: Map[String, String]): Seq[(String, String)] = {
+      val listParams = extractListParams(params)
+      val max = if(listParams.isEmpty) -1 else listParams.map(_._1).max
+
+      (for(i <- 0 to max) yield {
+        val rowParams = listParams.getOrElse(i, Map.empty[String, String])
+        mapping.validate("", rowParams).map { case (key, message) =>
+          (key + "_" + i, message)
+        }
+      }).flatten
+    }
+  }  
+  
   /**
    * ValueType wrapper for the optional property.
    */
