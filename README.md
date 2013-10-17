@@ -138,7 +138,7 @@ $('#register').click(function(e){
 Release Notes
 --------
 
-### 0.0.3 - IN DEVELOPMENT
+### 0.0.3 - 18 Oct 2013
 
 * Add ```ValidationJavaScriptProvoider```.
 * Add ```list()``` mapping for List property.
