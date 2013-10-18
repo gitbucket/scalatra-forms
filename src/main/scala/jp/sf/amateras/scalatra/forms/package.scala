@@ -151,6 +151,35 @@ package object forms {
     }
   }
   
+  /**
+   * ValueType for the Double property.
+   */
+  def double(constraints: Constraint*): SingleValueType[Double] = new SingleValueType[Double](constraints: _*){
+    
+    def convert(value: String): Double = value match {
+      case null|"" => 0d
+      case x => x.toDouble
+    }
+    
+    override def validate(name: String, value: String, params: Map[String, String]): Seq[(String, String)] = {
+      try {
+        value.toDouble
+        super.validate(name, value, params)
+      } catch {
+        case e: NumberFormatException => Seq(name -> "%s must be a number.".format(name))
+      }
+    }
+  }
+  
+  /**
+   * ValueType for the java.util.Date property.
+   */
+  def date(pattern: String, constraints: Constraint*): SingleValueType[java.util.Date] = 
+    new SingleValueType[java.util.Date]((datePattern(pattern) +: constraints): _*){
+      def convert(value: String): java.util.Date = new java.text.SimpleDateFormat(pattern).parse(value)
+    }
+  
+  
   def mapping[T, P1](f1: (String, ValueType[P1]))(factory: (P1) => T): MappingValueType[T] = new MappingValueType[T]{
     def fields = Seq(f1)
     def convert(name: String, params: Map[String, String]) = factory(p(f1, name, params))
@@ -445,5 +474,18 @@ package object forms {
         if(message.isEmpty) Some("%s must be '%s'.".format(name, pattern)) else Some(message)
       } else None
   }
+  
+  def datePattern(pattern: String, message: String = ""): Constraint = new Constraint {
+    override def validate(name: String, value: String): Option[String] =
+      if(value != null && value.nonEmpty){
+        try {
+          new java.text.SimpleDateFormat(pattern).parse(value)
+          None
+        } catch {
+          case e: java.text.ParseException => 
+            if(message.isEmpty) Some("%s must be '%s'.".format(name, pattern)) else Some(message)
+        }
+      } else None
+  }  
   
 }
