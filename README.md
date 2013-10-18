@@ -137,6 +137,9 @@ $('#register').click(function(e){
 
 Release Notes
 --------
+### 0.0.4 - IN DEVELOPMENT
+
+* Add ```double()``` and ```date()``` mapping.
 
 ### 0.0.3 - 18 Oct 2013
 
