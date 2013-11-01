@@ -12,7 +12,7 @@ and put <a href="https://raw.github.com/takezoe/scalatra-forms/master/src/main/r
 ```scala
 resolvers += "amateras-repo" at "http://amateras.sourceforge.jp/mvn/"
 
-libraryDependencies += "jp.sf.amateras" %% "scalatra-forms" % "0.0.2"
+libraryDependencies += "jp.sf.amateras" %% "scalatra-forms" % "0.0.4"
 ```
 
 Define a form mapping at first. It's a similar to Play2, but scalatra-forms is more flexible.
@@ -137,7 +137,7 @@ $('#register').click(function(e){
 
 Release Notes
 --------
-### 0.0.4 - IN DEVELOPMENT
+### 0.0.4 - 2 Nov 2013
 
 * Add ```double()``` and ```date()``` mapping.
 * Add I18N support for error messages.
