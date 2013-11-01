@@ -11,7 +11,7 @@ trait ClientSideValidationFormSupport { self: ServletBase with JacksonJsonSuppor
   def get[T](path: String, form: MappingValueType[T])(action: T => Any): Route = {
     registerValidate(path, form)
     get(path){
-      val bundle = ResourceBundle.getBundle("jp.sf.amateras.scalatra.forms.messages", locale(request))
+      val bundle = ResourceBundle.getBundle(BUNDLE_NAME, locale(request))
       withValidation(form, params, bundle){ obj: T =>
         action(obj)
       }
@@ -21,7 +21,7 @@ trait ClientSideValidationFormSupport { self: ServletBase with JacksonJsonSuppor
   def post[T](path: String, form: MappingValueType[T])(action: T => Any): Route = {
     registerValidate(path, form)
     post(path){
-      val bundle = ResourceBundle.getBundle("jp.sf.amateras.scalatra.forms.messages", locale(request))
+      val bundle = ResourceBundle.getBundle(BUNDLE_NAME, locale(request))
       withValidation(form, params, bundle){ obj: T =>
         action(obj)
       }
@@ -30,7 +30,7 @@ trait ClientSideValidationFormSupport { self: ServletBase with JacksonJsonSuppor
   
   def ajaxGet[T](path: String, form: MappingValueType[T])(action: T => Any): Route = {
     get(path){
-      val bundle = ResourceBundle.getBundle("jp.sf.amateras.scalatra.forms.messages", locale(request))
+      val bundle = ResourceBundle.getBundle(BUNDLE_NAME, locale(request))
       form.validate("", params, bundle) match {
         case Nil    => action(form.convert("", params, bundle))
         case errors => {
@@ -44,7 +44,7 @@ trait ClientSideValidationFormSupport { self: ServletBase with JacksonJsonSuppor
   
   def ajaxPost[T](path: String, form: MappingValueType[T])(action: T => Any): Route = {
     post(path){
-      val bundle = ResourceBundle.getBundle("jp.sf.amateras.scalatra.forms.messages", locale(request))
+      val bundle = ResourceBundle.getBundle(BUNDLE_NAME, locale(request))
       form.validate("", params, bundle) match {
         case Nil    => action(form.convert("", params, bundle))
         case errors => {
@@ -59,7 +59,7 @@ trait ClientSideValidationFormSupport { self: ServletBase with JacksonJsonSuppor
   private def registerValidate[T](path: String, form: MappingValueType[T]) = {
     post(path.replaceFirst("/$", "") + "/validate"){
       contentType = "application/json"
-      val bundle = ResourceBundle.getBundle("jp.sf.amateras.scalatra.forms.messages", locale(request))
+      val bundle = ResourceBundle.getBundle(BUNDLE_NAME, locale(request))
       form.validateAsJSON(params, bundle)
     }
   }

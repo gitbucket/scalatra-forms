@@ -6,6 +6,8 @@ import java.util.ResourceBundle
 
 package object forms {
   
+  val BUNDLE_NAME = "jp.sf.amateras.scalatra.forms.messages"
+  
   /**
    * Runs form validation before action.
    * If there are validation error, action is not invoked and this method throws RuntimeException.
