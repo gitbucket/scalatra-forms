@@ -140,6 +140,7 @@ Release Notes
 ### 0.0.4 - IN DEVELOPMENT
 
 * Add ```double()``` and ```date()``` mapping.
+* Add I18N support for error messages.
 
 ### 0.0.3 - 18 Oct 2013
 
