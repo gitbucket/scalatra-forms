@@ -11,7 +11,7 @@ trait ClientSideValidationFormSupport { self: ServletBase with JacksonJsonSuppor
   def get[T](path: String, form: MappingValueType[T])(action: T => Any): Route = {
     registerValidate(path, form)
     get(path){
-      withValidation(form, params, getBundle(locale)){ obj: T =>
+      withValidation(form, params, messages){ obj: T =>
         action(obj)
       }
     }
@@ -20,7 +20,7 @@ trait ClientSideValidationFormSupport { self: ServletBase with JacksonJsonSuppor
   def post[T](path: String, form: MappingValueType[T])(action: T => Any): Route = {
     registerValidate(path, form)
     post(path){
-      withValidation(form, params, getBundle(locale)){ obj: T =>
+      withValidation(form, params, messages){ obj: T =>
         action(obj)
       }
     }
@@ -28,8 +28,8 @@ trait ClientSideValidationFormSupport { self: ServletBase with JacksonJsonSuppor
   
   def ajaxGet[T](path: String, form: MappingValueType[T])(action: T => Any): Route = {
     get(path){
-      form.validate("", params, getBundle(locale)) match {
-        case Nil    => action(form.convert("", params, getBundle(locale)))
+      form.validate("", params, messages) match {
+        case Nil    => action(form.convert("", params, messages))
         case errors => {
           status = 400
           contentType = "application/json"
@@ -41,8 +41,8 @@ trait ClientSideValidationFormSupport { self: ServletBase with JacksonJsonSuppor
   
   def ajaxPost[T](path: String, form: MappingValueType[T])(action: T => Any): Route = {
     post(path){
-      form.validate("", params, getBundle(locale)) match {
-        case Nil    => action(form.convert("", params, getBundle(locale)))
+      form.validate("", params, messages) match {
+        case Nil    => action(form.convert("", params, messages))
         case errors => {
           status = 400
           contentType = "application/json"
@@ -55,7 +55,7 @@ trait ClientSideValidationFormSupport { self: ServletBase with JacksonJsonSuppor
   private def registerValidate[T](path: String, form: MappingValueType[T]) = {
     post(path.replaceFirst("/$", "") + "/validate"){
       contentType = "application/json"
-      form.validateAsJSON(params, getBundle(locale))
+      form.validateAsJSON(params, messages)
     }
   }
   
