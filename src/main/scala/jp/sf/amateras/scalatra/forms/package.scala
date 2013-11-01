@@ -3,11 +3,14 @@ package jp.sf.amateras.scalatra
 import org.json4s._
 import org.json4s.jackson._
 import java.util.ResourceBundle
+import java.util.Locale
 
 package object forms {
   
   val BUNDLE_NAME = "jp.sf.amateras.scalatra.forms.messages"
   
+  def getBundle(locale: Locale): ResourceBundle = ResourceBundle.getBundle(BUNDLE_NAME, locale, new UTF8Control())
+    
   /**
    * Runs form validation before action.
    * If there are validation error, action is not invoked and this method throws RuntimeException.

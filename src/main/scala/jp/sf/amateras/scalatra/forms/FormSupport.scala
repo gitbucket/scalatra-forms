@@ -9,8 +9,7 @@ trait FormSupport { self: ServletBase with I18nSupport =>
   
   def get[T](path: String, form: MappingValueType[T])(action: T => Any): Route = {
     get(path){
-      val bundle = ResourceBundle.getBundle(BUNDLE_NAME, locale(request))
-      withValidation(form, params, bundle){ obj: T =>
+      withValidation(form, params, getBundle(locale)){ obj: T =>
         action(obj)
       }
     }
@@ -18,8 +17,7 @@ trait FormSupport { self: ServletBase with I18nSupport =>
 
   def post[T](path: String, form: MappingValueType[T])(action: T => Any): Route = {
     post(path){
-      val bundle = ResourceBundle.getBundle(BUNDLE_NAME, locale(request))
-      withValidation(form, params, bundle){ obj: T =>
+      withValidation(form, params, getBundle(locale)){ obj: T =>
         action(obj)
       }
     }

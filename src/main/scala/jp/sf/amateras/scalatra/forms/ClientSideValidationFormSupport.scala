@@ -11,8 +11,7 @@ trait ClientSideValidationFormSupport { self: ServletBase with JacksonJsonSuppor
   def get[T](path: String, form: MappingValueType[T])(action: T => Any): Route = {
     registerValidate(path, form)
     get(path){
-      val bundle = ResourceBundle.getBundle(BUNDLE_NAME, locale(request))
-      withValidation(form, params, bundle){ obj: T =>
+      withValidation(form, params, getBundle(locale)){ obj: T =>
         action(obj)
       }
     }
@@ -21,8 +20,7 @@ trait ClientSideValidationFormSupport { self: ServletBase with JacksonJsonSuppor
   def post[T](path: String, form: MappingValueType[T])(action: T => Any): Route = {
     registerValidate(path, form)
     post(path){
-      val bundle = ResourceBundle.getBundle(BUNDLE_NAME, locale(request))
-      withValidation(form, params, bundle){ obj: T =>
+      withValidation(form, params, getBundle(locale)){ obj: T =>
         action(obj)
       }
     }
@@ -30,9 +28,8 @@ trait ClientSideValidationFormSupport { self: ServletBase with JacksonJsonSuppor
   
   def ajaxGet[T](path: String, form: MappingValueType[T])(action: T => Any): Route = {
     get(path){
-      val bundle = ResourceBundle.getBundle(BUNDLE_NAME, locale(request))
-      form.validate("", params, bundle) match {
-        case Nil    => action(form.convert("", params, bundle))
+      form.validate("", params, getBundle(locale)) match {
+        case Nil    => action(form.convert("", params, getBundle(locale)))
         case errors => {
           status = 400
           contentType = "application/json"
@@ -44,9 +41,8 @@ trait ClientSideValidationFormSupport { self: ServletBase with JacksonJsonSuppor
   
   def ajaxPost[T](path: String, form: MappingValueType[T])(action: T => Any): Route = {
     post(path){
-      val bundle = ResourceBundle.getBundle(BUNDLE_NAME, locale(request))
-      form.validate("", params, bundle) match {
-        case Nil    => action(form.convert("", params, bundle))
+      form.validate("", params, getBundle(locale)) match {
+        case Nil    => action(form.convert("", params, getBundle(locale)))
         case errors => {
           status = 400
           contentType = "application/json"
@@ -59,8 +55,7 @@ trait ClientSideValidationFormSupport { self: ServletBase with JacksonJsonSuppor
   private def registerValidate[T](path: String, form: MappingValueType[T]) = {
     post(path.replaceFirst("/$", "") + "/validate"){
       contentType = "application/json"
-      val bundle = ResourceBundle.getBundle(BUNDLE_NAME, locale(request))
-      form.validateAsJSON(params, bundle)
+      form.validateAsJSON(params, getBundle(locale))
     }
   }
   
