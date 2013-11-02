@@ -12,7 +12,7 @@ and put <a href="https://raw.github.com/takezoe/scalatra-forms/master/src/main/r
 ```scala
 resolvers += "amateras-repo" at "http://amateras.sourceforge.jp/mvn/"
 
-libraryDependencies += "jp.sf.amateras" %% "scalatra-forms" % "0.0.4"
+libraryDependencies += "jp.sf.amateras" %% "scalatra-forms" % "0.0.5"
 ```
 
 Define a form mapping at first. It's a similar to Play2, but scalatra-forms is more flexible.
