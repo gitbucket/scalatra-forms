@@ -148,7 +148,7 @@ package object forms {
         value.toInt
         super.validate(name, value, params, messages)
       } catch {
-        case e: NumberFormatException => Seq(name -> "%s must be a number.".format(name))
+        case e: NumberFormatException => Seq(name -> messages("error.number").format(name))
       }
     }
   }
@@ -168,7 +168,7 @@ package object forms {
         value.toDouble
         super.validate(name, value, params, messages)
       } catch {
-        case e: NumberFormatException => Seq(name -> "%s must be a number.".format(name))
+        case e: NumberFormatException => Seq(name -> messages("error.number").format(name))
       }
     }
   }
