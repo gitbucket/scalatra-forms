@@ -470,6 +470,13 @@ package object forms {
       if(value != null && value.length < length) Some(messages("error.minlength").format(name, length)) else None
   }
   
+  def oneOf(values: Seq[String], message: String = ""): Constraint = new Constraint(){
+    override def validate(name: String, value: String, messages: Messages): Option[String] = 
+      if(value != null && !values.contains(value)){
+        if(message.isEmpty) Some(messages("error.oneOf").format(name, values.map("'" + _ + "'").mkString(", "))) else Some(message)
+      } else None
+  }
+  
   def pattern(pattern: String, message: String = ""): Constraint = new Constraint {
     override def validate(name: String, value: String, messages: Messages): Option[String] =
       if(value != null && !value.matches("^" + pattern + "$")){

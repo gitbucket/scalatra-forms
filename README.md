@@ -137,6 +137,11 @@ $('#register').click(function(e){
 
 Release Notes
 --------
+### 0.0.5 - 3 Nov 2013
+
+* Add ```oneOf()``` constraint which checks whether the value is one of specified strings.
+* Fix to retrieve error message for ```number()``` and ```double()``` from ResourceBundle.
+
 ### 0.0.4 - 2 Nov 2013
 
 * Add ```double()``` and ```date()``` mapping.
