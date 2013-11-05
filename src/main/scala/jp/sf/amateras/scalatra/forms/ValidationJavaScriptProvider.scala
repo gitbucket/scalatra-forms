@@ -35,6 +35,7 @@ class ValidationJavaScriptProvider extends ScalatraServlet {
   }
 
   get("/validation.js"){
+    contentType = "application/x-javascript;charset=UTF-8"
     source
   }
 
