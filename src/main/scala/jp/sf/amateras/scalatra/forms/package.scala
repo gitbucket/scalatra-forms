@@ -144,11 +144,14 @@ package object forms {
     }
     
     override def validate(name: String, value: String, params: Map[String, String], messages: Messages): Seq[(String, String)] = {
-      try {
-        value.toInt
-        super.validate(name, value, params, messages)
-      } catch {
-        case e: NumberFormatException => Seq(name -> messages("error.number").format(name))
+      super.validate(name, value, params, messages) match {
+        case Nil => try {
+          value.toInt
+          Nil
+        } catch {
+          case e: NumberFormatException => Seq(name -> messages("error.number").format(name))
+        }
+        case errors => errors
       }
     }
   }
@@ -164,11 +167,14 @@ package object forms {
     }
     
     override def validate(name: String, value: String, params: Map[String, String], messages: Messages): Seq[(String, String)] = {
-      try {
-        value.toDouble
-        super.validate(name, value, params, messages)
-      } catch {
-        case e: NumberFormatException => Seq(name -> messages("error.number").format(name))
+      super.validate(name, value, params, messages) match {
+        case Nil => try {
+          value.toDouble
+          Nil
+        } catch {
+          case e: NumberFormatException => Seq(name -> messages("error.number").format(name))
+        }
+        case errors => errors
       }
     }
   }
