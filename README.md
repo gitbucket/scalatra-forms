@@ -12,7 +12,7 @@ and put <a href="https://raw.github.com/takezoe/scalatra-forms/master/src/main/r
 ```scala
 resolvers += "amateras-repo" at "http://amateras.sourceforge.jp/mvn/"
 
-libraryDependencies += "jp.sf.amateras" %% "scalatra-forms" % "0.0.5"
+libraryDependencies += "jp.sf.amateras" %% "scalatra-forms" % "0.0.6"
 ```
 
 Define a form mapping at first. It's a similar to Play2, but scalatra-forms is more flexible.
@@ -137,6 +137,12 @@ $('#register').click(function(e){
 
 Release Notes
 --------
+### 0.0.8 - 8 Nov 2013
+
+* Add ```list()``` mapping for ```SingleValueType```.
+* ```ValidationJavaScriptProvider`` adds Content-Type header for validation.js.
+* Fix to run parent validations before number checking.
+
 ### 0.0.5 - 3 Nov 2013
 
 * Add ```oneOf()``` constraint which checks whether the value is one of specified strings.
