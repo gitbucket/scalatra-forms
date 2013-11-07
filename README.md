@@ -57,7 +57,7 @@ class RegisterServlet extends ScalatraServlet with ClientSideValidationFormSuppo
 
 In the HTML, you have to do two things below.
 
-- Add ```<script>``` to import jQuery which is required by validation.js (You have to put jQuery into your application)
+- Add ```<script>``` to import jQuery which is required by validation.js
 - Add ```<script>``` to import validation.js which helps client side validation provided by ```ValidationJavaScriptProvider```
 - Add ```validation="true"``` to your ```<form>```
 
@@ -69,7 +69,7 @@ It returns validation results as JSON.
 In the client side, scalatra-forms puts error messages into ```span#error-FIELD_NAME```.
 
 ```scala
-<script src="/assets/js/jquery-2.0.3.min.js"></script>
+<script src="http://code.jquery.com/jquery-2.0.3.min.js"></script>
 <script src="/assets/js/validation.js"></script>
 ...
 <form method="POST" action="/register" validation="true">
