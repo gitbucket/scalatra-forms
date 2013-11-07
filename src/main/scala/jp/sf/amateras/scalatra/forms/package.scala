@@ -306,7 +306,35 @@ package object forms {
   /////////////////////////////////////////////////////////////////////////////////////////////
   // ValueType wrappers to provide additional features.
   
-  private val pattern = "(.+?)\\[([0-9]+)\\]\\[(.+?)\\]".r
+  private val IndexedSingleParamPattern = "(.+?)\\[([0-9]+)\\]".r
+  
+  def list[T](valueType: SingleValueType[T]): ValueType[List[T]] = new ValueType[List[T]](){
+    
+    private def extractParams(params: Map[String, String]): List[(Int, String)] = {
+      params.flatMap { case (key, value) =>
+        key match {
+          case IndexedSingleParamPattern(_, i) => Some((i.toInt, value))
+          case _ => None
+        }
+      }.toList.sortBy(_._1)
+    }
+    
+    def convert(name: String, params: Map[String, String], messages: Messages): List[T] = {
+      extractParams(params).map { case (i, value) =>
+        valueType.convert(value, messages)
+      }
+    }
+    
+    def validate(name: String, params: Map[String, String], messages: Messages): Seq[(String, String)] = {
+      extractParams(params).map { case (i, value) =>
+        valueType.validate(name, value, params, messages).map { case (key, message) =>
+          (key + "_" + i, message)
+        }
+      }.flatten
+    }
+  }
+  
+  private val IndexedMapParamPattern = "(.+?)\\[([0-9]+)\\]\\[(.+?)\\]".r
   
   /**
    * ValueType for the List property.
@@ -314,10 +342,10 @@ package object forms {
    */
   def list[T](mapping: MappingValueType[T]): ValueType[List[T]] = new ValueType[List[T]](){
 
-    private def extractListParams(params: Map[String, String]) = {
+    private def extractParams(params: Map[String, String]): Map[Int, Map[String, String]] = {
       params.flatMap { case (key, value) =>
         key match {
-          case pattern(_, i, s) => Some((i.toInt, s, value))
+          case IndexedMapParamPattern(_, i, s) => Some((i.toInt, s, value))
           case _ => None
         }
       }
@@ -329,8 +357,8 @@ package object forms {
       }
     }
 
-    override def convert(name: String, params: Map[String, String], messages: Messages): List[T] = {
-      val listParams = extractListParams(params)
+    def convert(name: String, params: Map[String, String], messages: Messages): List[T] = {
+      val listParams = extractParams(params)
       val max = if(listParams.isEmpty) -1 else listParams.map(_._1).max
 
       (for(i <- 0 to max) yield {
@@ -340,7 +368,7 @@ package object forms {
     }
 
     def validate(name: String, params: Map[String, String], messages: Messages): Seq[(String, String)] = {
-      val listParams = extractListParams(params)
+      val listParams = extractParams(params)
       val max = if(listParams.isEmpty) -1 else listParams.map(_._1).max
 
       (for(i <- 0 to max) yield {
