@@ -163,7 +163,7 @@ Release Notes
 ### 0.0.8 - 8 Nov 2013
 
 * Add ```list()``` mapping for ```SingleValueType```.
-* ```ValidationJavaScriptProvider`` adds Content-Type header for validation.js.
+* ```ValidationJavaScriptProvider``` adds Content-Type header for validation.js.
 * Fix to run parent validations before number checking.
 
 ### 0.0.5 - 3 Nov 2013
