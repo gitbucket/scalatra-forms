@@ -6,16 +6,31 @@ A library to validate and map request parameters for Scalatra.
 Getting Started
 --------
 
-At first, add the following dependency into your build.sbt to use scalatra-forms
-and put <a href="https://raw.github.com/takezoe/scalatra-forms/master/src/main/resources/validation.js">validation.js</a> into your project.
+At first, add the following dependency into your build.sbt to use scalatra-forms.
 
 ```scala
 resolvers += "amateras-repo" at "http://amateras.sourceforge.jp/mvn/"
 
-libraryDependencies += "jp.sf.amateras" %% "scalatra-forms" % "0.0.5"
+libraryDependencies += "jp.sf.amateras" %% "scalatra-forms" % "0.0.6"
 ```
 
-Define a form mapping at first. It's a similar to Play2, but scalatra-forms is more flexible.
+Next, add ```ValidationJavaScriptProvider``` to Bootstrap of your Scalatra application.
+
+```scala
+import jp.sf.amateras.scalatra.forms._
+
+class ScalatraBootstrap extends LifeCycle {
+  override def init(context: ServletContext) {
+    ...
+    context.mount(new ValidationJavaScriptProvider, "/assets/js/*")
+    ...
+  }
+}
+```
+
+scalatra-forms is now ready.
+
+Define a form mapping. It's a similar to Play2, but scalatra-forms is more flexible.
 
 ```scala
 import jp.sf.amateras.scalatra.forms._
@@ -29,7 +44,7 @@ val form = mapping(
 ```
 
 Next, create a servlet (or filter) which extends ScalatraServlet (or ScalatraFilter).
-It also mixed in ```jp.sf.amateras.scalatra.forms.FormSupport``` or ```jp.sf.amateras.scalatra.forms.ClientSideValidationFormSupport```.
+It also mixed in ```FormSupport``` or ```ClientSideValidationFormSupport```.
 The object which is mapped request parameters is passed as an argument of action.
 
 ```scala
@@ -40,7 +55,12 @@ class RegisterServlet extends ScalatraServlet with ClientSideValidationFormSuppo
 }
 ```
 
-In the HTML, add ```validation="true"``` to your form.
+In the HTML, you have to do two things below.
+
+- Add ```<script>``` to import jQuery which is required by validation.js
+- Add ```<script>``` to import validation.js which helps client side validation provided by ```ValidationJavaScriptProvider```
+- Add ```validation="true"``` to your ```<form>```
+
 scalatra-forms registers a submit event listener to validate form contents.
 This listener posts all the form contents to ```FORM_ACTION/validate```.
 This action is registered by scalatra-forms automatically to validate form contents.
@@ -49,6 +69,9 @@ It returns validation results as JSON.
 In the client side, scalatra-forms puts error messages into ```span#error-FIELD_NAME```.
 
 ```scala
+<script src="http://code.jquery.com/jquery-2.0.3.min.js"></script>
+<script src="/assets/js/validation.js"></script>
+...
 <form method="POST" action="/register" validation="true">
   Name: <input type="name" type="text">
   <span class="error" id="error-name"></span>
@@ -137,6 +160,12 @@ $('#register').click(function(e){
 
 Release Notes
 --------
+### 0.0.8 - 8 Nov 2013
+
+* Add ```list()``` mapping for ```SingleValueType```.
+* ```ValidationJavaScriptProvider``` adds Content-Type header for validation.js.
+* Fix to run parent validations before number checking.
+
 ### 0.0.5 - 3 Nov 2013
 
 * Add ```oneOf()``` constraint which checks whether the value is one of specified strings.
