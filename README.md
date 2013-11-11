@@ -160,7 +160,7 @@ $('#register').click(function(e){
 
 Release Notes
 --------
-### 0.0.7 - xx Nov 2013
+### 0.0.7 - 12 Nov 2013
 
 * Add ```MappingConstraint``` to validate converted object by ```MappingValueType```.
 
