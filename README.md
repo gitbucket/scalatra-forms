@@ -160,7 +160,11 @@ $('#register').click(function(e){
 
 Release Notes
 --------
-### 0.0.8 - 8 Nov 2013
+### 0.0.7 - xx Nov 2013
+
+* Add ```MappingConstraint``` to validate converted object by ```MappingValueType```.
+
+### 0.0.6 - 8 Nov 2013
 
 * Add ```list()``` mapping for ```SingleValueType```.
 * ```ValidationJavaScriptProvider``` adds Content-Type header for validation.js.
