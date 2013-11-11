@@ -107,12 +107,7 @@ package object forms {
         errors
       } else {
         // Validate the converted object
-        val obj = convert(name, params, messages)
-        constraints.map { constraint =>
-          constraint(obj, messages).map { error =>
-            name -> error
-          }
-        }.flatten
+        constraints.map(_(convert(name, params, messages), messages)).flatten
       }
     }
     
@@ -123,8 +118,9 @@ package object forms {
   
   /**
    * Constraint for the converted object by MappingValueType.
+   * Return a tuple of the key and the error message if error the given object is invalid.
    */
-  type MappingConstraint[T] = (T, Messages) => Option[String]
+  type MappingConstraint[T] = (T, Messages) => Option[(String, String)]
   
   /**
    * Converts errors to JSON.
