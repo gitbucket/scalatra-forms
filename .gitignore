@@ -13,3 +13,7 @@ project/plugins/project/
 .scala_dependencies
 .classpath
 .project
+
+# IntelliJ specific
+.idea/
+.idea_modules/
