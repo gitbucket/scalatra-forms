@@ -160,6 +160,12 @@ $('#register').click(function(e){
 
 Release Notes
 --------
+### 0.0.8 - 14 Nov 2013
+
+* Fix nested property handling problem.
+* Fix ``verifying()`` for ```MappingValueType``` and remove ```MappingConstraint``` instead of it.
+* Add ``length``` constraint.
+
 ### 0.0.7 - 12 Nov 2013
 
 * Add ```MappingConstraint``` to validate converted object by ```MappingValueType```.
