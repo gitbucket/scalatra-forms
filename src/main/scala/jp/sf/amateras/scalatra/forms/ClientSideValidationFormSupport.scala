@@ -39,7 +39,7 @@ trait ClientSideValidationFormSupport { self: ServletBase with JacksonJsonSuppor
     }
   }
 
-  def ajaxPost[T](path: String, form: MappingValueType[T])(action: T => Any): Route = {
+  def ajaxPost[T](path: String, form: ValueType[T])(action: T => Any): Route = {
     post(path){
       form.validate("", params, messages) match {
         case Nil    => action(form.convert("", params, messages))
