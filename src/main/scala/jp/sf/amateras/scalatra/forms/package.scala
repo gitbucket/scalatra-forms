@@ -101,8 +101,6 @@ package object forms {
     def fields: Seq[(String, ValueType[_])]
 
     def validate(name: String, params: Map[String, String], messages: Messages): Seq[(String, String)] = {
-      println(name)
-      println(params)
       fields.map { case (fieldName, valueType) =>
         valueType.validate((if(name.isEmpty) fieldName else name + "." + fieldName), params, messages)
       }.flatten
