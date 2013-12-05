@@ -2,6 +2,7 @@ package jp.sf.amateras.scalatra
 
 import org.scalatra.i18n.Messages
 import org.json4s._
+import scala.reflect.ClassTag
 
 package object forms {
 
@@ -187,6 +188,23 @@ package object forms {
       def convert(value: String, messages: Messages): java.util.Date = new java.text.SimpleDateFormat(pattern).parse(value)
     }
 
+  /**
+   * ValueType for the dummy property.
+   */
+  def dummy[T](implicit c: ClassTag[T]): SingleValueType[T] = new SingleValueType[T]{
+    def convert(value: String, messages: org.scalatra.i18n.Messages): T = {
+      val clazz = c.runtimeClass
+      val value = if(clazz == classOf[Int] || clazz == classOf[Long] || clazz == classOf[Short] ||
+                     clazz == classOf[Char] || clazz == classOf[Short] || clazz == classOf[Double]){
+        0
+      } else if(clazz == classOf[Boolean]){
+        false
+      } else {
+        null
+      }
+      value.asInstanceOf[T]
+    }
+  }
 
   def mapping[T, P1](f1: (String, ValueType[P1]))(factory: (P1) => T): MappingValueType[T] = new MappingValueType[T]{
     def fields = Seq(f1)

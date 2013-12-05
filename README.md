@@ -160,6 +160,10 @@ $('#register').click(function(e){
 
 Release Notes
 --------
+### 0.0.9 - xx Dec 2013
+
+* Add ```dummy``` value type.
+
 ### 0.0.8 - 14 Nov 2013
 
 * Fix nested property handling problem.
