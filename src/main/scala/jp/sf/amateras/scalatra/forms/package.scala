@@ -129,7 +129,7 @@ package object forms {
    */
   def boolean(constraints: Constraint*): SingleValueType[Boolean] = new SingleValueType[Boolean](constraints: _*){
     def convert(value: String, messages: Messages): Boolean = value match {
-      case null|"false"|"FALSE" => false
+      case null|""|"false"|"FALSE" => false
       case _ => true
     }
   }
@@ -185,7 +185,10 @@ package object forms {
    */
   def date(pattern: String, constraints: Constraint*): SingleValueType[java.util.Date] =
     new SingleValueType[java.util.Date]((datePattern(pattern) +: constraints): _*){
-      def convert(value: String, messages: Messages): java.util.Date = new java.text.SimpleDateFormat(pattern).parse(value)
+      def convert(value: String, messages: Messages): java.util.Date = value match {
+        case null|"" => null
+        case value   => new java.text.SimpleDateFormat(pattern).parse(value)
+      }
     }
 
   /**
