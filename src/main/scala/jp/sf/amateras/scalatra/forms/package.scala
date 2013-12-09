@@ -16,9 +16,13 @@ package object forms {
    * @return the result of action
    */
   def withValidation[T](mapping: ValueType[T], params: Map[String, String], messages: Messages)(action: T => Any): Any = {
-    mapping.validate("", params, messages).isEmpty match {
+    val errors = mapping.validate("", params, messages)
+    errors.isEmpty match {
       case true  => action(mapping.convert("", params, messages))
-      case false => throw new RuntimeException("Invalid Request") // TODO show error page?
+      case false => {
+        println(errors)
+        throw new RuntimeException("Invalid Request") // TODO show error page?
+      }
     }
   }
 
@@ -359,10 +363,10 @@ package object forms {
    */
   def list[T](valueType: ValueType[T]): ValueType[List[T]] = new ValueType[List[T]](){
 
-    private def extractSingleParams(params: Map[String, String]): List[(Int, String)] = {
+    private def extractSingleParams(name: String, params: Map[String, String]): List[(Int, String)] = {
       params.flatMap { case (key, value) =>
         key match {
-          case IndexedSingleParamPattern(_, i) => Some((i.toInt, value))
+          case x@IndexedSingleParamPattern(_, i) if(x.startsWith(name + "[")) => Some((i.toInt, value))
           case _ => None
         }
       }.toList.sortBy(_._1)
@@ -386,7 +390,7 @@ package object forms {
     def convert(name: String, params: Map[String, String], messages: Messages): List[T] = {
       valueType match {
         case singleValueType: SingleValueType[_] => {
-          extractSingleParams(params).map { case (i, value) =>
+          extractSingleParams(name, params).map { case (i, value) =>
             singleValueType.convert(value, messages)
           }
         }
@@ -404,7 +408,7 @@ package object forms {
     def validate(name: String, params: Map[String, String], messages: Messages): Seq[(String, String)] = {
       valueType match {
         case singleValueType: SingleValueType[_] => {
-          extractSingleParams(params).map { case (i, value) =>
+          extractSingleParams(name, params).map { case (i, value) =>
             singleValueType.validate(name, value, params, messages).map { case (key, message) =>
               (key + "_" + i, message)
             }
