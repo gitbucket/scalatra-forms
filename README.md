@@ -160,6 +160,10 @@ $('#register').click(function(e){
 
 Release Notes
 --------
+### 0.0.10 - IN DEVELOPMENT
+
+* Add ```long``` value type.
+
 ### 0.0.9 - 6 Dec 2013
 
 * Add ```dummy``` value type.
