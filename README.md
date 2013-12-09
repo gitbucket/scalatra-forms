@@ -160,9 +160,10 @@ $('#register').click(function(e){
 
 Release Notes
 --------
-### 0.0.10 - IN DEVELOPMENT
+### 0.0.10 - 10 Dec 2013
 
 * Add ```long``` value type.
+* Fix ```list``` bug for un-nested properties.
 
 ### 0.0.9 - 6 Dec 2013
 
