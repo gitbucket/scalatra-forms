@@ -181,6 +181,29 @@ package object forms {
   }
 
   /**
+   * ValueType for the Long property.
+   */
+  def long(constraints: Constraint*): SingleValueType[Long] = new SingleValueType[Long](constraints: _*){
+
+    def convert(value: String, messages: Messages): Long = value match {
+      case null|"" => 0l
+      case x => x.toLong
+    }
+
+    override def validate(name: String, value: String, params: Map[String, String], messages: Messages): Seq[(String, String)] = {
+      super.validate(name, value, params, messages) match {
+        case Nil => try {
+          value.toDouble
+          Nil
+        } catch {
+          case e: NumberFormatException => Seq(name -> messages("error.long").format(name))
+        }
+        case errors => errors
+      }
+    }
+  }
+  
+  /**
    * ValueType for the java.util.Date property.
    */
   def date(pattern: String, constraints: Constraint*): SingleValueType[java.util.Date] =
