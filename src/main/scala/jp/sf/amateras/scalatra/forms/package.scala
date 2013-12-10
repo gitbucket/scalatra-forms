@@ -224,9 +224,14 @@ package object forms {
   def dummy[T](implicit c: ClassTag[T]): SingleValueType[T] = new SingleValueType[T]{
     def convert(value: String, messages: org.scalatra.i18n.Messages): T = {
       val clazz = c.runtimeClass
-      val value = if(clazz == classOf[Int] || clazz == classOf[Long] || clazz == classOf[Short] ||
-                     clazz == classOf[Char] || clazz == classOf[Short] || clazz == classOf[Double]){
+      val value = if(clazz == classOf[Int] ||clazz == classOf[Short] || clazz == classOf[Char]){
         0
+      } else if(clazz == classOf[Long]){
+        0l
+      } else if(clazz == classOf[Double]){
+        0d
+      } else if(clazz == classOf[Float]){
+        0f
       } else if(clazz == classOf[Boolean]){
         false
       } else {
