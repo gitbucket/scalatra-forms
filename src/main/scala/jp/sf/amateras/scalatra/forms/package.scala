@@ -20,7 +20,6 @@ package object forms {
     errors.isEmpty match {
       case true  => action(mapping.convert("", params, messages))
       case false => {
-        println(errors)
         throw new RuntimeException("Invalid Request") // TODO show error page?
       }
     }
@@ -544,7 +543,7 @@ package object forms {
 
   def required(message: String): Constraint = new Constraint(){
     override def validate(name: String, value: String, messages: Messages): Option[String] =
-      if(value == null || value.isEmpty) Some(message) else None
+      if(value == null || value.isEmpty) Some(message.format(name)) else None
   }
 
   def maxlength(length: Int): Constraint = new Constraint(){
@@ -565,14 +564,14 @@ package object forms {
   def oneOf(values: Seq[String], message: String = ""): Constraint = new Constraint(){
     override def validate(name: String, value: String, messages: Messages): Option[String] =
       if(value != null && !values.contains(value)){
-        if(message.isEmpty) Some(messages("error.oneOf").format(name, values.map("'" + _ + "'").mkString(", "))) else Some(message)
+        Some((if(message.isEmpty) messages("error.oneOf") else message).format(name, values.map("'" + _ + "'").mkString(", ")))
       } else None
   }
 
   def pattern(pattern: String, message: String = ""): Constraint = new Constraint {
     override def validate(name: String, value: String, messages: Messages): Option[String] =
       if(value != null && !value.matches("^" + pattern + "$")){
-        if(message.isEmpty) Some(messages("error.pattern").format(name, pattern)) else Some(message)
+        Some((if(message.isEmpty) messages("error.pattern") else message).format(name, pattern))
       } else None
   }
 
@@ -584,7 +583,7 @@ package object forms {
           None
         } catch {
           case e: java.text.ParseException =>
-            if(message.isEmpty) Some(messages("error.datePattern").format(name, pattern)) else Some(message)
+            Some((if(message.isEmpty) messages("error.datePattern") else message).format(name, pattern))
         }
       } else None
   }
