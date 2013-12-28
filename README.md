@@ -160,6 +160,10 @@ $('#register').click(function(e){
 
 Release Notes
 --------
+### 0.0.12 - 29 Dec 2013
+
+* Formatting (such as %s) is available in custom messages as same as default messages.
+
 ### 0.0.11 - 12 Dec 2013
 
 * Fix ```dummy()``` bug.
