@@ -2,7 +2,7 @@ name := "scalatra-forms"
 
 organization := "jp.sf.amateras"
 
-version := "0.0.11"
+version := "0.0.12"
 
 scalaVersion := "2.10.1"
 
