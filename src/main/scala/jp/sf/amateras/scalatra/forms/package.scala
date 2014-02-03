@@ -196,7 +196,7 @@ package object forms {
     override def validate(name: String, value: String, params: Map[String, String], messages: Messages): Seq[(String, String)] = {
       super.validate(name, value, params, messages) match {
         case Nil => try {
-          value.toDouble
+          value.toLong
           Nil
         } catch {
           case e: NumberFormatException => Seq(name -> messages("error.long").format(name))
