@@ -24,6 +24,7 @@ function validate(e){
     if($.isEmptyObject(data)){
       form.data('validated', true);
       form.submit();
+      form.data('validated', false);
     } else {
       form.data('validated', false);
       displayErrors(data);
