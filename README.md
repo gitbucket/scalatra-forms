@@ -160,6 +160,10 @@ $('#register').click(function(e){
 
 Release Notes
 --------
+### 0.1.0 - In Development
+
+* Support Scala 2.11 and Scalatra 2.3
+
 ### 0.0.14 - 19 Feb 2014
 
 * Bug fix about form state after after validation succeeded.
