@@ -7,10 +7,10 @@ version := "0.1.0"
 scalaVersion := "2.11.1"
 
 libraryDependencies ++= Seq(
-  "org.scalatra" %% "scalatra"        % "2.3.0.RC3" % "provided",
-  "org.scalatra" %% "scalatra-json"   % "2.3.0.RC3" % "provided",
-  "org.json4s"   %% "json4s-jackson"  % "3.2.9"     % "provided",
-  "org.scalatra" %% "scalatra-specs2" % "2.3.0.RC3" % "test",
+  "org.scalatra" %% "scalatra"        % "2.3.0" % "provided",
+  "org.scalatra" %% "scalatra-json"   % "2.3.0" % "provided",
+  "org.json4s"   %% "json4s-jackson"  % "3.2.9" % "provided",
+  "org.scalatra" %% "scalatra-specs2" % "2.3.0" % "test",
   "org.eclipse.jetty" % "jetty-webapp" % "8.1.8.v20121106" % "provided",
   "org.eclipse.jetty.orbit" % "javax.servlet" % "3.0.0.v201112011016" % "provided;test" artifacts (Artifact("javax.servlet", "jar", "jar"))
 )
