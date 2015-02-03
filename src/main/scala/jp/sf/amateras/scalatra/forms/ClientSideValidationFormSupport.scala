@@ -26,6 +26,24 @@ trait ClientSideValidationFormSupport { self: ServletBase with JacksonJsonSuppor
     }
   }
 
+  def put[T](path: String, form: ValueType[T])(action: T => Any): Route = {
+    registerValidate(path, form)
+    put(path){
+      withValidation(form, params, messages){ obj: T =>
+        action(obj)
+      }
+    }
+  }
+
+  def delete[T](path: String, form: ValueType[T])(action: T => Any): Route = {
+    registerValidate(path, form)
+    delete(path){
+      withValidation(form, params, messages){ obj: T =>
+        action(obj)
+      }
+    }
+  }
+
   def ajaxGet[T](path: String, form: ValueType[T])(action: T => Any): Route = {
     get(path){
       form.validate("", params, messages) match {
@@ -41,6 +59,32 @@ trait ClientSideValidationFormSupport { self: ServletBase with JacksonJsonSuppor
 
   def ajaxPost[T](path: String, form: ValueType[T])(action: T => Any): Route = {
     post(path){
+      form.validate("", params, messages) match {
+        case Nil    => action(form.convert("", params, messages))
+        case errors => {
+          status = 400
+          contentType = "application/json"
+          toJson(errors)
+        }
+      }
+    }
+  }
+
+  def ajaxDelete[T](path: String, form: ValueType[T])(action: T => Any): Route = {
+    delete(path){
+      form.validate("", params, messages) match {
+        case Nil    => action(form.convert("", params, messages))
+        case errors => {
+          status = 400
+          contentType = "application/json"
+          toJson(errors)
+        }
+      }
+    }
+  }
+
+  def ajaxPut[T](path: String, form: ValueType[T])(action: T => Any): Route = {
+    put(path){
       form.validate("", params, messages) match {
         case Nil    => action(form.convert("", params, messages))
         case errors => {
