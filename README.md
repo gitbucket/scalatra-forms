@@ -160,6 +160,10 @@ $('#register').click(function(e){
 
 Release Notes
 --------
+### 0.2.0 - Coming Soon
+
+* Support Scalatra 2.4
+
 ### 0.1.0 - 9 Jul 2014
 
 * Support Scala 2.11 and Scalatra 2.3
