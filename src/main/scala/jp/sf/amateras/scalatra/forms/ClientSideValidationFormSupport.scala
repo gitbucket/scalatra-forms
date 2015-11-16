@@ -11,7 +11,8 @@ trait ClientSideValidationFormSupport { self: ServletBase with JacksonJsonSuppor
   def get[T](path: String, form: ValueType[T])(action: T => Any): Route = {
     registerValidate(path, form)
     get(path){
-      withValidation(form, params, messages){ obj: T =>
+      val paramMap = params.toSeq.toMap
+      withValidation(form, paramMap, messages){ obj: T =>
         action(obj)
       }
     }
@@ -20,7 +21,8 @@ trait ClientSideValidationFormSupport { self: ServletBase with JacksonJsonSuppor
   def post[T](path: String, form: ValueType[T])(action: T => Any): Route = {
     registerValidate(path, form)
     post(path){
-      withValidation(form, params, messages){ obj: T =>
+      val paramMap = params.toSeq.toMap
+      withValidation(form, paramMap, messages){ obj: T =>
         action(obj)
       }
     }
@@ -28,8 +30,9 @@ trait ClientSideValidationFormSupport { self: ServletBase with JacksonJsonSuppor
 
   def ajaxGet[T](path: String, form: ValueType[T])(action: T => Any): Route = {
     get(path){
-      form.validate("", params, messages) match {
-        case Nil    => action(form.convert("", params, messages))
+      val paramMap = params.toSeq.toMap
+      form.validate("", paramMap, messages) match {
+        case Nil    => action(form.convert("", paramMap, messages))
         case errors => {
           status = 400
           contentType = "application/json"
@@ -41,8 +44,9 @@ trait ClientSideValidationFormSupport { self: ServletBase with JacksonJsonSuppor
 
   def ajaxPost[T](path: String, form: ValueType[T])(action: T => Any): Route = {
     post(path){
-      form.validate("", params, messages) match {
-        case Nil    => action(form.convert("", params, messages))
+      val paramMap = params.toSeq.toMap
+      form.validate("", paramMap, messages) match {
+        case Nil    => action(form.convert("", paramMap, messages))
         case errors => {
           status = 400
           contentType = "application/json"
@@ -55,7 +59,8 @@ trait ClientSideValidationFormSupport { self: ServletBase with JacksonJsonSuppor
   private def registerValidate[T](path: String, form: ValueType[T]) = {
     post(path.replaceFirst("/$", "") + "/validate"){
       contentType = "application/json"
-      form.validateAsJSON(params, messages)
+      val paramMap = params.toSeq.toMap
+      form.validateAsJSON(paramMap, messages)
     }
   }
 

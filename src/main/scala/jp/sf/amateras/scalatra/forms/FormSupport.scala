@@ -9,7 +9,8 @@ trait FormSupport { self: ServletBase with I18nSupport =>
 
   def get[T](path: String, form: ValueType[T])(action: T => Any): Route = {
     get(path){
-      withValidation(form, params, messages){ obj: T =>
+      val paramMap = params.toSeq.toMap
+      withValidation(form, paramMap, messages){ obj: T =>
         action(obj)
       }
     }
@@ -17,7 +18,8 @@ trait FormSupport { self: ServletBase with I18nSupport =>
 
   def post[T](path: String, form: ValueType[T])(action: T => Any): Route = {
     post(path){
-      withValidation(form, params, messages){ obj: T =>
+      val paramMap = params.toSeq.toMap
+      withValidation(form, paramMap, messages){ obj: T =>
         action(obj)
       }
     }
