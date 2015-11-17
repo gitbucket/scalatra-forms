@@ -11,7 +11,7 @@ At first, add the following dependency into your build.sbt to use scalatra-forms
 ```scala
 resolvers += "amateras-repo" at "http://amateras.sourceforge.jp/mvn/"
 
-libraryDependencies += "jp.sf.amateras" %% "scalatra-forms" % "0.1.0"
+libraryDependencies += "jp.sf.amateras" %% "scalatra-forms" % "0.2.0"
 ```
 
 Next, add ```ValidationJavaScriptProvider``` to Bootstrap of your Scalatra application.
