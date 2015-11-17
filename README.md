@@ -34,7 +34,7 @@ Define a form mapping. It's a similar to Play2, but scalatra-forms is more flexi
 
 ```scala
 import jp.sf.amateras.scalatra.forms._
-
+ 
 case class RegisterForm(name: String, description: String)
 
 val form = mapping(
@@ -160,7 +160,7 @@ $('#register').click(function(e){
 
 Release Notes
 --------
-### 0.2.0 - Coming Soon
+### 0.2.0 - 18 Nov 2015
 
 * Fix performance issue
 
