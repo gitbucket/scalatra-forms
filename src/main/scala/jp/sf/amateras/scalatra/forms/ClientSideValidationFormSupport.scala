@@ -31,7 +31,8 @@ trait ClientSideValidationFormSupport { self: ServletBase with JacksonJsonSuppor
   def put[T](path: String, form: ValueType[T])(action: T => Any): Route = {
     registerValidate(path, form)
     put(path){
-      withValidation(form, params, messages){ obj: T =>
+      val paramMap = params.toSeq.toMap
+      withValidation(form, paramMap, messages){ obj: T =>
         action(obj)
       }
     }
@@ -40,7 +41,8 @@ trait ClientSideValidationFormSupport { self: ServletBase with JacksonJsonSuppor
   def delete[T](path: String, form: ValueType[T])(action: T => Any): Route = {
     registerValidate(path, form)
     delete(path){
-      withValidation(form, params, messages){ obj: T =>
+      val paramMap = params.toSeq.toMap
+      withValidation(form, paramMap, messages){ obj: T =>
         action(obj)
       }
     }
@@ -76,7 +78,8 @@ trait ClientSideValidationFormSupport { self: ServletBase with JacksonJsonSuppor
 
   def ajaxDelete[T](path: String, form: ValueType[T])(action: T => Any): Route = {
     delete(path){
-      form.validate("", params, messages) match {
+      val paramMap = params.toSeq.toMap
+      form.validate("", paramMap, messages) match {
         case Nil    => action(form.convert("", params, messages))
         case errors => {
           status = 400
@@ -89,7 +92,8 @@ trait ClientSideValidationFormSupport { self: ServletBase with JacksonJsonSuppor
 
   def ajaxPut[T](path: String, form: ValueType[T])(action: T => Any): Route = {
     put(path){
-      form.validate("", params, messages) match {
+      val paramMap = params.toSeq.toMap
+      form.validate("", paramMap, messages) match {
         case Nil    => action(form.convert("", params, messages))
         case errors => {
           status = 400
