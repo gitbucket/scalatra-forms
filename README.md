@@ -160,6 +160,12 @@ $('#register').click(function(e){
 
 Release Notes
 --------
+### 1.0.0 - Under development
+
+* Move to GitBucket organization.
+* Change group id and package name to `io.github.gitbucket`.
+* Add `put()`, `delete()`, `ajaxPut()` and `ajaxDelete()` to `ClientSidevalidationFormSupport`.
+
 ### 0.2.0 - 18 Nov 2015
 
 * Fix performance issue
@@ -174,15 +180,15 @@ Release Notes
 
 ### 0.0.13 - 2 Feb 2014
 
-* Bug fix for ```long``` value type.
+* Bug fix for `long` value type.
 
 ### 0.0.12 - 29 Dec 2013
 
-* Formatting (such as %s) is available in custom messages as same as default messages.
+* Formatting (such as `%s`) is available in custom messages as same as default messages.
 
 ### 0.0.11 - 12 Dec 2013
 
-* Fix ```dummy()``` bug.
+* Fix `dummy()` bug.
 
 ### 0.0.10 - 10 Dec 2013
 
@@ -191,45 +197,45 @@ Release Notes
 
 ### 0.0.9 - 6 Dec 2013
 
-* Add ```dummy``` value type.
+* Add `dummy` value type.
 
 ### 0.0.8 - 14 Nov 2013
 
 * Fix nested property handling problem.
-* Fix ```verifying()``` for ```MappingValueType``` and remove ```MappingConstraint``` instead of it.
-* Add ```length``` constraint.
+* Fix `verifying()` for `MappingValueType` and remove `MappingConstraint` instead of it.
+* Add `length` constraint.
 
 ### 0.0.7 - 12 Nov 2013
 
-* Add ```MappingConstraint``` to validate converted object by ```MappingValueType```.
+* Add `MappingConstraint` to validate converted object by `MappingValueType`.
 
 ### 0.0.6 - 8 Nov 2013
 
-* Add ```list()``` mapping for ```SingleValueType```.
+* Add `list()` mapping for `SingleValueType`.
 * ```ValidationJavaScriptProvider``` adds Content-Type header for validation.js.
 * Fix to run parent validations before number checking.
 
 ### 0.0.5 - 3 Nov 2013
 
-* Add ```oneOf()``` constraint which checks whether the value is one of specified strings.
-* Fix to retrieve error message for ```number()``` and ```double()``` from ResourceBundle.
+* Add `oneOf()` constraint which checks whether the value is one of specified strings.
+* Fix to retrieve error message for `number()` and `double()` from ResourceBundle.
 
 ### 0.0.4 - 2 Nov 2013
 
-* Add ```double()``` and ```date()``` mapping.
+* Add `double()` and `date()` mapping.
 * Add I18N support for error messages.
 
 ### 0.0.3 - 18 Oct 2013
 
-* Add ```ValidationJavaScriptProvoider```.
-* Add ```list()``` mapping for List property.
+* Add `ValidationJavaScriptProvoider`.
+* Add `list()` mapping for List property.
 
 ### 0.0.2 - 10 Aug 2013
 
 * Improved nested property support.
-* Add ```validate(String, String, Map[String, String])``` to ```Constraint```. 
+* Add `validate(String, String, Map[String, String])` to `Constraint`. 
   It makes possible to access other parameter in single field validation.
-* Add ```verify()``` to ```MappingValueType``` which validates the mapped instance.
+* Add `verify()` to `MappingValueType` which validates the mapped instance.
 
 ### 0.0.1 - 04 Aug 2013
 
