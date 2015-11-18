@@ -1,4 +1,4 @@
-package jp.sf.amateras.scalatra.forms
+package io.github.gitbucket.scalatra.forms
 
 import org.scalatra._
 

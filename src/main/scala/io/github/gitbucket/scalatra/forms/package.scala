@@ -1,4 +1,4 @@
-package jp.sf.amateras.scalatra
+package io.github.gitbucket.scalatra
 
 import org.scalatra.i18n.Messages
 import org.json4s._
