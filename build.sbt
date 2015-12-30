@@ -2,17 +2,17 @@ name := "scalatra-forms"
 
 organization := "io.github.gitbucket"
 
-version := "1.0.0-SNAPSHOT"
+version := "1.0.0"
 
 scalaVersion := "2.11.6"
 
 libraryDependencies ++= Seq(
-  "org.scalatra" %% "scalatra"        % "2.3.0" % "provided",
-  "org.scalatra" %% "scalatra-json"   % "2.3.0" % "provided",
-  "org.json4s"   %% "json4s-jackson"  % "3.2.9" % "provided",
-  "org.scalatra" %% "scalatra-specs2" % "2.3.0" % "test",
-  "org.eclipse.jetty" % "jetty-webapp" % "8.1.8.v20121106" % "provided",
-  "org.eclipse.jetty.orbit" % "javax.servlet" % "3.0.0.v201112011016" % "provided;test" artifacts (Artifact("javax.servlet", "jar", "jar"))
+  "org.scalatra" %% "scalatra"        % "2.4.0" % "provided",
+  "org.scalatra" %% "scalatra-json"   % "2.4.0" % "provided",
+  "org.json4s"   %% "json4s-jackson"  % "3.3.0" % "provided",
+  "org.scalatra" %% "scalatra-specs2" % "2.4.0" % "test",
+  "org.eclipse.jetty" % "jetty-webapp" % "9.3.6.v20151106" % "provided",
+  "javax.servlet" % "javax.servlet-api" % "3.1.0" % "provided;test"
 )
 
 EclipseKeys.createSrc := EclipseCreateSrc.Default + EclipseCreateSrc.Resource
