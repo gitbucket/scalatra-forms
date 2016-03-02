@@ -15,9 +15,36 @@ libraryDependencies ++= Seq(
   "javax.servlet" % "javax.servlet-api" % "3.1.0" % "provided;test"
 )
 
-EclipseKeys.createSrc := EclipseCreateSrc.Default + EclipseCreateSrc.Resource
+publishMavenStyle := true
 
-EclipseKeys.withSource := true
+publishTo <<= version { (v: String) =>
+  val nexus = "https://oss.sonatype.org/"
+  if (v.trim.endsWith("SNAPSHOT")) Some("snapshots" at nexus + "content/repositories/snapshots")
+  else                             Some("releases"  at nexus + "service/local/staging/deploy/maven2")
+}
 
-publishTo := Some(Resolver.ssh("amateras-repo-scp", "shell.sourceforge.jp", "/home/groups/a/am/amateras/htdocs/mvn/") withPermissions("0664")
-  as(System.getProperty("user.name"), new java.io.File(Path.userHome.absolutePath + "/.ssh/id_rsa")))
+publishArtifact in Test := false
+
+pomIncludeRepository := { _ => false }
+
+pomExtra := (
+  <url>https://github.com/bizreach/elastic-scala-httpclient</url>
+    <licenses>
+      <license>
+        <name>The Apache Software License, Version 2.0</name>
+        <url>http://www.apache.org/licenses/LICENSE-2.0.txt</url>
+      </license>
+    </licenses>
+    <scm>
+      <url>https://github.com/bizreach/elastic-scala-httpclient</url>
+      <connection>scm:git:https://github.com/bizreach/elastic-scala-httpclient.git</connection>
+    </scm>
+    <developers>
+      <developer>
+        <id>takezoe</id>
+        <name>Naoki Takezoe</name>
+        <email>takezoe_at_gmail.com</email>
+        <timezone>+9</timezone>
+      </developer>
+    </developers>)
+
