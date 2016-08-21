@@ -28,7 +28,7 @@ publishArtifact in Test := false
 pomIncludeRepository := { _ => false }
 
 pomExtra := (
-  <url>https://github.com/bizreach/elastic-scala-httpclient</url>
+  <url>https://github.com/gitbucket/scalatra-forms</url>
     <licenses>
       <license>
         <name>The Apache Software License, Version 2.0</name>
@@ -37,7 +37,7 @@ pomExtra := (
     </licenses>
     <scm>
       <url>https://github.com/bizreach/elastic-scala-httpclient</url>
-      <connection>scm:git:https://github.com/bizreach/elastic-scala-httpclient.git</connection>
+      <connection>scm:git:https://github.com/gitbucket/scalatra-forms.git</connection>
     </scm>
     <developers>
       <developer>

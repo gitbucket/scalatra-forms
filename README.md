@@ -9,13 +9,13 @@ Getting Started
 At first, add the following dependency into your build.sbt to use scalatra-forms.
 
 ```scala
-libraryDependencies += "jp.sf.amateras" %% "scalatra-forms" % "1.0.0"
+libraryDependencies += "io.github.gitbucket" %% "scalatra-forms" % "1.0.0"
 ```
 
 Next, add ```ValidationJavaScriptProvider``` to Bootstrap of your Scalatra application.
 
 ```scala
-import jp.sf.amateras.scalatra.forms._
+import io.github.gitbucket.scalatra.forms._
 
 class ScalatraBootstrap extends LifeCycle {
   override def init(context: ServletContext) {
@@ -31,7 +31,7 @@ scalatra-forms is now ready.
 Define a form mapping. It's a similar to Play2, but scalatra-forms is more flexible.
 
 ```scala
-import jp.sf.amateras.scalatra.forms._
+import io.github.gitbucket.scalatra.forms._
  
 case class RegisterForm(name: String, description: String)
 
