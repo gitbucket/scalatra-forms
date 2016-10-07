@@ -36,7 +36,7 @@ pomExtra := (
       </license>
     </licenses>
     <scm>
-      <url>https://github.com/bizreach/elastic-scala-httpclient</url>
+      <url>https://github.com/gitbucket/scalatra-forms</url>
       <connection>scm:git:https://github.com/gitbucket/scalatra-forms.git</connection>
     </scm>
     <developers>
