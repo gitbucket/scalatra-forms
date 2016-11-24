@@ -2,25 +2,27 @@ name := "scalatra-forms"
 
 organization := "io.github.gitbucket"
 
-version := "1.0.0"
+version := "1.1.0"
 
-scalaVersion := "2.11.6"
+scalaVersion := "2.12.0"
 
 libraryDependencies ++= Seq(
-  "org.scalatra" %% "scalatra"        % "2.4.0" % "provided",
-  "org.scalatra" %% "scalatra-json"   % "2.4.0" % "provided",
-  "org.json4s"   %% "json4s-jackson"  % "3.3.0" % "provided",
-  "org.scalatra" %% "scalatra-specs2" % "2.4.0" % "test",
-  "org.eclipse.jetty" % "jetty-webapp" % "9.3.6.v20151106" % "provided",
-  "javax.servlet" % "javax.servlet-api" % "3.1.0" % "provided;test"
+  "org.scalatra"      %% "scalatra"         % "2.5.0"           % "provided",
+  "org.scalatra"      %% "scalatra-json"    % "2.5.0"           % "provided",
+  "org.json4s"        %% "json4s-jackson"   % "3.5.0"           % "provided",
+  "org.scalatra"      %% "scalatra-specs2"  % "2.5.0"           % "test",
+  "org.eclipse.jetty" % "jetty-webapp"      % "9.3.6.v20151106" % "provided",
+  "javax.servlet"     % "javax.servlet-api" % "3.1.0"           % "provided;test"
 )
 
 publishMavenStyle := true
 
-publishTo <<= version { (v: String) =>
+publishTo := {
   val nexus = "https://oss.sonatype.org/"
-  if (v.trim.endsWith("SNAPSHOT")) Some("snapshots" at nexus + "content/repositories/snapshots")
-  else                             Some("releases"  at nexus + "service/local/staging/deploy/maven2")
+  if (version.value.trim.endsWith("SNAPSHOT"))
+    Some("snapshots" at nexus + "content/repositories/snapshots")
+  else
+    Some("releases"  at nexus + "service/local/staging/deploy/maven2")
 }
 
 publishArtifact in Test := false
@@ -47,4 +49,3 @@ pomExtra := (
         <timezone>+9</timezone>
       </developer>
     </developers>)
-
