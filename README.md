@@ -9,7 +9,7 @@ Getting Started
 At first, add the following dependency into your build.sbt to use scalatra-forms.
 
 ```scala
-libraryDependencies += "io.github.gitbucket" %% "scalatra-forms" % "1.0.0"
+libraryDependencies += "io.github.gitbucket" %% "scalatra-forms" % "1.1.0"
 ```
 
 Next, add ```ValidationJavaScriptProvider``` to Bootstrap of your Scalatra application.
@@ -158,7 +158,11 @@ $('#register').click(function(e){
 
 Release Notes
 --------
-### 1.0.0 - Under development
+### 1.1.0 - 25 Nov 2016
+
+* Scalatra 2.5.0 and Scala 2.12 support
+
+### 1.0.0 - 31 Dec 2015
 
 * Move to GitBucket organization.
 * Change group id and package name to `io.github.gitbucket`.
