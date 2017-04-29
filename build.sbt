@@ -2,7 +2,7 @@ name := "scalatra-forms"
 
 organization := "io.github.gitbucket"
 
-version := "1.1.0"
+version := "1.1.1-SNAPSHOT"
 
 scalaVersion := "2.12.0"
 
