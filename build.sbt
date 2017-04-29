@@ -4,7 +4,11 @@ organization := "io.github.gitbucket"
 
 version := "1.1.1-SNAPSHOT"
 
-scalaVersion := "2.12.0"
+val Scala212 = "2.12.2"
+
+scalaVersion := Scala212
+
+crossScalaVersions := Scala212 :: "2.11.11" :: Nil
 
 libraryDependencies ++= Seq(
   "org.scalatra"      %% "scalatra"         % "2.5.0"           % "provided",
