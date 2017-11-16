@@ -3,6 +3,8 @@ scalatra-forms
 
 A library to validate and map request parameters for Scalatra.
 
+**Notice:** This project is maintained no longer because it has been merged into Scalatra! See [the Scalatra documentation](http://scalatra.org/guides/2.6/formats/forms.html) to know details.
+
 Getting Started
 --------
 
